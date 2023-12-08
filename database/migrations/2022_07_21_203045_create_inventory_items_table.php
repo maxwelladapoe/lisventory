@@ -15,15 +15,19 @@ return new class extends Migration
     {
         Schema::create('inventory_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid("user_id")->references('id')->on('users');
-            $table->foreignUuid("team_id")->nullable();
+            $table->foreignId("user_id")->references('id')->on('users');
+            $table->foreignId("team_id")->nullable();
             $table->string("name");
             $table->integer("category_id")->nullable();
             $table->text("description")->nullable();
             $table->float("purchase_price");
             $table->string("currency");
             $table->float("resell_price")->nullable();
-            $table->integer("quantity");
+            $table->integer("quantity")->default(0);
+            $table->string("sku")->nullable();
+            $table->string("manufacturer")->nullable();
+            $table->string("barcode")->nullable();
+            $table->foreignId("barcode_type_id")->nullable();
             $table->string("image_path")->nullable();
             $table->timestamps();
         });

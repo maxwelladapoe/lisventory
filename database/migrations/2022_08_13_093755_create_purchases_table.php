@@ -25,8 +25,8 @@ return new class extends Migration
             $table->date('delivery_date')->nullable();
             $table->string('delivery_status')->default(False)->comment('0=Pending, 1= Delivered');;
 
-            $table->uuid('user_id')->nullable();
-            $table->uuid('team_id')->nullable();
+            $table->foreignId("user_id")->references('id')->on('users')->nullable();
+            $table->foreignId('team_id')->references('id')->on('teams')->nullable();
 
             $table->timestamps();
         });

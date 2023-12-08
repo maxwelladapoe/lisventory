@@ -37,7 +37,7 @@ class InventoryItemController extends Controller
 
         $user = Auth::user();
 
-        $inventoryItems = InventoryItem::where('user_id', $user->id)->latest()->paginate(25);
+        $inventoryItems = InventoryItem::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->latest()->paginate(25);
 
 
         return Inertia::render('Inventory/Index', [
@@ -49,7 +49,7 @@ class InventoryItemController extends Controller
     {
         $user = Auth::user();
 
-        $categories  = Category::where('user_id', $user->id)->latest()->get();
+        $categories  = Category::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->latest()->get();
 
         return Inertia::render('Inventory/CreateInventory', [
             'categories' => $categories
@@ -78,14 +78,11 @@ class InventoryItemController extends Controller
         $inventoryItem->quantity = $request->quantity;
         $inventoryItem->category_id = $request->category_id;
         $inventoryItem->user_id = Auth::user()->id;
-        //$inventoryItem->team_id = Auth::user()->team_id;
+        $inventoryItem->team_id = Auth::user()->current_team_id;
 
 
 
         if ($inventoryItem->save()) {
-
-
-
             if ($request['files']) {
                 foreach ($request['files'] as $file) {
                     $inventoryItem->addMedia($file)->toMediaCollection('inventory_images');
@@ -111,7 +108,6 @@ class InventoryItemController extends Controller
             'currency' => ['required', 'string'],
             'quantity' => ['required', 'integer'],
             'category_id' => ['nullable', 'integer'],
-
         ]);
 
         $inventoryItem = InventoryItem::find($id);

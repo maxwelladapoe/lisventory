@@ -17,8 +17,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->integer('percentage');
-            $table->uuid('user_id')->nullable();
-            $table->uuid('team_id')->nullable();
+            $table->foreignId("user_id")->references('id')->on('users')->nullable();
+            $table->foreignId('team_id')->references('id')->on('teams')->nullable();
             $table->timestamps();
         });
     }

@@ -24,8 +24,8 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->string('address')->nullable();
             $table->tinyInteger('status')->default("1");
-            $table->uuid('user_id')->nullable();
-            $table->uuid('team_id')->nullable();
+            $table->foreignId("user_id")->references('id')->on('users')->nullable();
+            $table->foreignId('team_id')->references('id')->on('teams')->nullable();
             $table->uuid('updated_by')->nullable();
             $table->timestamps();
         });

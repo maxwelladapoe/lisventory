@@ -21,10 +21,10 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('currency')->nullable();
             $table->boolean('status')->default(False)->comment('0=pending, 1= Approved');
-            $table->uuid('user_id')->comment("user id of creator");
-            $table->uuid('team_id')->nullable()->comment("team id of creator");
+            $table->foreignId("user_id")->comment("user id of creator");
+            $table->foreignId('team_id')->nullable()->comment("team id of creator");
             $table->uuid('customer_id')->nullable();
-            $table->uuid('updated_by')->nullable();
+            $table->foreignId('updated_by')->nullable();
             $table->string('tax')->nullable();
             $table->string('discount')->nullable();
             $table->timestamps();

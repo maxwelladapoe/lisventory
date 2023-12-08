@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\UUIDs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 
 class Customer extends Model
 {
-    use HasFactory;
-    use Searchable;
+    use HasFactory, UUIDs, Searchable;
 
     public function toSearchableArray()
     {

@@ -1,11 +1,11 @@
 <template>
-    <Head title="Create Inventory" />
-    <AuthenticatedLayout title="Create Inventory">
+    <Head title="Edit Customer" />
+    <AuthenticatedLayout>
         <div>
             <v-container>
                 <v-row>
                     <v-col cols="12" lg="8">
-                        <AddItemForm categories="categories" />
+                        <AddCustomerForm categories="categories" is-editing :selected-item="customer" />
                     </v-col>
                 </v-row>
             </v-container>
@@ -14,14 +14,15 @@
 </template>
 
 <script setup>
+import AddCustomerForm from "@/Components/Forms/AddCustomerForm.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
-import AddItemForm from "@/Components/Forms/AddItemForm.vue";
+import { Head, Link } from "@inertiajs/vue3";
 import { usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
+import {computed} from "vue";
 
 const page = usePage();
-const categories = computed(() => {
-    return page.props.categories;
+
+const customer = computed(() => {
+    return page.props.customer;
 });
 </script>

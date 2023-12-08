@@ -226,7 +226,7 @@ const onSubmit = () => {
     form.post("/inventory/store", {
         preserveScroll: true,
         onSuccess: () => {
-            form.reset("password");
+            form.reset();
             isSuccessful.value = true;
         },
     });

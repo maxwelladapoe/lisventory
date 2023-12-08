@@ -14,18 +14,21 @@ return new class extends Migration
     public function up()
     {
         Schema::create('customers', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('username')->nullable();
             $table->string('avatar')->nullable();
             $table->string('mobile_no')->nullable();
             $table->string('email')->nullable();
-            $table->string('address')->nullable();
+            $table->text('address')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('zip')->nullable();
             $table->tinyInteger('status')->default("1");
-            $table->uuid('user_id')->nullable();
-            $table->uuid('team_id')->nullable();
-            $table->uuid('updated_by')->nullable();
+            $table->foreignId("user_id")->references('id')->on('users')->nullable();
+            $table->foreignId('team_id')->references('id')->on('teams')->nullable();
+            $table->foreignId('updated_by')->nullable();
             $table->timestamps();
         });
     }

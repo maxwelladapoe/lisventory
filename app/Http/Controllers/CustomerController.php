@@ -10,6 +10,7 @@ use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -21,10 +22,10 @@ class CustomerController extends Controller
 
         // if ($request->query('search')) {
 
-        //     if ($this->userTeamId) {
-        //         $customers = Customer::search($request->query('search'))->where('team_id', $this->userTeamId)->get();
+        //     if ($user->current_team_id) {
+        //         $customers = Customer::search($request->query('search'))->where('team_id', $user->current_team_id)->get();
         //     } else {
-        //         $customers = Customer::search($request->query('search'))->where('user_id', $this->userId)->get();
+        //         $customers = Customer::search($request->query('search'))->where('user_id',  $user->id)->get();
         //     }
 
         //     return response()->json([
@@ -34,36 +35,32 @@ class CustomerController extends Controller
         //     ]);
         // }
         $user = Auth::user();
-        $customers = Customer::where('user_id', $user->id)->latest()->paginate(25);
+        $customers = Customer::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->latest()->paginate(25);
 
         return Inertia::render('Customers/Index', [
             'customers' => $customers
         ]);
     }
 
+    public function create()
+    {
+        return Inertia::render('Customers/Create',);
+    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Customer $customer)
     {
-        if ($customer) {
-
-            if ($customer->user_id != $this->userId || $customer->team_id != $this->userTeamId) {
-                return response()->json(['success' => false, 'message' => 'This resource does not belong to you'], 400);
-            }
-            return response()->json([
-                'success' => true,
-                'message' => 'Customer fetched',
-                'customer' => $customer
-            ], 200);
-        } else {
-            return response()->json(['success' => false, 'message' => 'oops something went wrong'], 500);
+        $user = Auth::user();
+        if ($customer->user_id !=  $user->id || $customer->team_id != $user->current_team_id) {
+            return response()->json(['success' => false, 'message' => 'This resource does not belong to you'], 400);
         }
+        return response()->json([
+            'success' => true,
+            'message' => 'Customer fetched',
+            'customer' => $customer
+        ], 200);
     }
+
 
 
     public function store(Request $request)
@@ -76,6 +73,7 @@ class CustomerController extends Controller
             'email' => ['required', 'string'],
             'mobile_no' => ['nullable', 'string'],
         ]);
+        $user = Auth::user();
         $customer = new Customer();
         $customer->first_name = $request->first_name;
         $customer->last_name = $request->last_name;
@@ -84,29 +82,28 @@ class CustomerController extends Controller
         $customer->email = $request->email;
         $customer->status = 1;
         $customer->mobile_no = $request->mobile_no;
-        $customer->user_id = $this->userId;
-        $customer->team_id = $this->userTeamId;
-        $customer->updated_by = Auth::user()->id;
+        $customer->user_id =  $user->id;
+        $customer->team_id = $user->current_team_id;
+        $customer->updated_by = $user->id;
         if ($customer->save()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'The customer has been added successfully',
-                'customer' => $customer
-            ], 201);
         } else {
-            return response()->json(['success' => false, 'message' => 'oops something went wrong'], 500);
         }
     }
 
 
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
+    public function edit(Request $request, Customer $customer)
+    {
+        $user = Auth::user();
+        if ($customer->user_id !=  $user->id || $customer->team_id != $user->current_team_id) {
+            dd("throw error");
+        }
+
+        return Inertia::render('Customers/Edit', [
+            "customer" => $customer
+        ]);
+    }
+
     public function update(Request $request, Customer $customer)
     {
         $this->validate($request, [
@@ -118,12 +115,11 @@ class CustomerController extends Controller
             'mobile_no' => ['nullable', 'string'],
         ]);
 
-        if ($customer->user_id != $this->userId || $customer->team_id != $this->userTeamId) {
+        $user = Auth::user();
+        if ($customer->user_id !=  $user->id || $customer->team_id != $user->current_team_id) {
             return response()->json(['success' => false, 'message' => 'This resource does not belong to you'], 400);
         }
 
-        //$customer = Customer::find($id);
-        $itemName = $customer->getOriginal("first_name") . " " . $customer->getOriginal("last_name");
         $customer->first_name = $request->first_name;
         $customer->last_name = $request->last_name;
         $customer->username = $request->username;
@@ -132,13 +128,7 @@ class CustomerController extends Controller
         $customer->mobile_no = $request->mobile_no;
         $customer->updated_by = Auth::user()->id;
         if ($customer->save()) {
-            return response()->json([
-                'success' => true,
-                'message' => "$itemName been updated successfully",
-                'customer' => $customer
-            ], 201);
         } else {
-            return response()->json(['success' => false, 'message' => 'oops something went wrong'], 500);
         }
     }
 
@@ -152,8 +142,9 @@ class CustomerController extends Controller
     public function destroy(Customer $customer)
     {
         //$customer = Customer::find($id);
+        $user = Auth::user();
 
-        if ($customer->user_id != $this->userId || $customer->team_id != $this->userTeamId) {
+        if ($customer->user_id !=  $user->id || $customer->team_id != $user->current_team_id) {
             return response()->json(['success' => false, 'message' => 'This resource does not belong to you'], 400);
         }
         if ($customer->delete()) {

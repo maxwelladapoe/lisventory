@@ -44,8 +44,13 @@ Route::middleware([
 
 
     Route::controller(CustomerController::class)->prefix('customers')->group(function () {
+
+    
         Route::get('/', 'index')->name('customers');
         Route::get('/create', 'create')->name('customerCreate');
         Route::post('/store', 'store')->name('customerStore');
+        Route::get('/edit/{customer}', 'edit')->name('customerEdit');
+        Route::put('/update/{customer}', 'update')->name('customerUpdate');
+
     });
 });

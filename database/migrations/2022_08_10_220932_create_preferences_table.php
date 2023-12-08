@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('preferences', function (Blueprint $table) {
             $table->id();
-            $table->uuid('user_id')->nullable();
+            $table->foreignId("user_id")->references('id')->on('users')->nullable();
             $table->string('currency')->nullable()->default('USD');
             $table->string('secondary_currency')->nullable();
             $table->string('theme')->nullable();

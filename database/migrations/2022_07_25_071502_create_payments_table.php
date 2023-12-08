@@ -24,7 +24,7 @@ return new class extends Migration
             $table->double('total_amount')->nullable();
             $table->date('date')->nullable();
             $table->text('payment_link')->nullable()->comment("a url that a user can pay with");
-            $table->uuid('user_id')->nullable()->comment("the user who created this payment");
+            $table->foreignId("user_id")->nullable()->comment("the user who created this payment");
             $table->uuid('updated_by')->nullable();
             $table->timestamps();
         });

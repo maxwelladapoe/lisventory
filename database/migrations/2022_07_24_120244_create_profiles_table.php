@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
-            $table->uuid('user_id');
+            $table->foreignId("user_id")->references('id')->on('users');
             $table->string('mobile_no')->nullable();
             $table->string('location')->nullable();
             $table->string('profile_photo')->nullable()->default(env('APP_URL')."/assets_general/defaultProfilePic.png");

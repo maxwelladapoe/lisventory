@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->uuid('user_id');
-            $table->uuid('team_id')->nullable();
+            $table->foreignId("user_id")->references('id')->on('users');
+            $table->foreignId('team_id')->references('id')->on('teams')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();

@@ -34,6 +34,10 @@
                     {{ getTimeAgo(item.created_at) }}
                 </template>
 
+                <template v-slot:item.name="{ item }">
+                    {{ item.first_name }} {{ item.last_name }}
+                </template>
+
                 <template v-slot:item.action="{ item }">
                     <div>
                         <v-menu>
@@ -47,14 +51,27 @@
                             </template>
 
                             <v-list>
-                                <v-list-item
-                                    v-for="(item, i) in TableActionItems"
+                                <template
+                                    v-for="(actionItem, i) in TableActionItems"
                                     :key="i"
                                 >
-                                    <v-list-item-title>{{
-                                        item.title
-                                    }}</v-list-item-title>
-                                </v-list-item>
+                                    <template v-if="actionItem.type == 'link'">
+                                        <Link :href="`customers/edit/${item.id}`">
+                                            <v-list-item>
+                                                <v-list-item-title>{{
+                                                    actionItem.title
+                                                }}</v-list-item-title>
+                                            </v-list-item>
+                                        </Link>
+                                    </template>
+                                    <template v-else>
+                                        <v-list-item>
+                                            <v-list-item-title>{{
+                                                actionItem.title
+                                            }}</v-list-item-title>
+                                        </v-list-item>
+                                    </template>
+                                </template>
                             </v-list>
                         </v-menu>
                     </div>
