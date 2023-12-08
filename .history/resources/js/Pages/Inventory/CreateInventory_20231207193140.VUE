@@ -1,0 +1,21 @@
+<template>
+    <Head title="Create Inventory" />
+    <AuthenticatedLayout title="Create Inventory">
+        <div>
+            <AddItemForm categories="" />
+        </div>
+    </AuthenticatedLayout>
+</template>
+
+<script setup>
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import { Head } from "@inertiajs/vue3";
+import AddItemForm from "@/Components/Forms/AddItemForm.vue";
+
+
+const page = usePage();
+const categories = computed(()=>{
+  return page.props.categories
+})
+
+</script>

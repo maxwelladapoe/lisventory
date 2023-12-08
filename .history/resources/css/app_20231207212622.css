@@ -1,0 +1,13 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+[x-cloak] {
+    display: none;
+}
+
+
+.pacifico{
+    font-family: 'Pacifico', cursive;
+}

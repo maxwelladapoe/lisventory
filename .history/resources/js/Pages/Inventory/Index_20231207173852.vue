@@ -1,0 +1,55 @@
+<template>
+    <Head title="Dashboard" />
+    <AuthenticatedLayout>
+        <div class="mb-5">
+            <h5 class="text-h5 font-weight-bold">Inventory</h5>
+            <Breadcrumbs :items="breadcrumbs" class="pa-0 mt-1" />
+        </div>
+
+        <div>
+            {{ $page.props.inventory }}
+
+            <v-data-table-server
+    v-model:items-per-page="itemsPerPage"
+    :search="search"
+    :headers="headers"
+    :items-length="totalItems"
+    :items="serverItems"
+    :loading="loading"
+    item-value="name"
+    @update:options="loadItems"
+  >
+    <template v-slot:tfoot>
+      <tr>
+        <td>
+          <v-text-field v-model="name" hide-details placeholder="Search name..." class="ma-2" density="compact"></v-text-field>
+        </td>
+        <td>
+          <v-text-field
+            v-model="calories"
+            hide-details
+            placeholder="Minimum calories"
+            type="number"
+            class="ma-2"
+            density="compact"
+          ></v-text-field>
+        </td>
+      </tr>
+    </template>
+  </v-data-table-server>
+        </div>
+    </AuthenticatedLayout>
+</template>
+
+<script setup>
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import Breadcrumbs from "@/Components/Breadcrumbs.vue";
+import { Head } from "@inertiajs/vue3";
+
+const breadcrumbs = [
+    {
+        title: "Inventory",
+        disabled: true,
+    },
+];
+</script>
