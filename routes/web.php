@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\SupplierController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,20 +38,25 @@ Route::middleware([
     })->name('dashboard');
 
     Route::controller(InventoryItemController::class)->prefix('inventory')->group(function () {
-        Route::get('/', 'index')->name('inventory');
-        Route::get('/create', 'create')->name('inventoryCreate');
-        Route::post('/store', 'store')->name('inventoryStore');
+        Route::get('/', 'index')->name('inventory.index');
+        Route::get('/create', 'create')->name('inventory.create');
+        Route::post('/store', 'store')->name('inventory.store');
     });
 
 
     Route::controller(CustomerController::class)->prefix('customers')->group(function () {
+        Route::get('/', 'index')->name('customers.index');
+        Route::get('/create', 'create')->name('customers.create');
+        Route::post('/store', 'store')->name('customers.store');
+        Route::get('/edit/{customer}', 'edit')->name('customers.edit');
+        Route::put('/update/{customer}', 'update')->name('customers.update');
+    });
 
-    
-        Route::get('/', 'index')->name('customers');
-        Route::get('/create', 'create')->name('customerCreate');
-        Route::post('/store', 'store')->name('customerStore');
-        Route::get('/edit/{customer}', 'edit')->name('customerEdit');
-        Route::put('/update/{customer}', 'update')->name('customerUpdate');
-
+    Route::controller(SupplierController::class)->prefix('suppliers')->group(function () {
+        Route::get('/', 'index')->name('suppliers.index');
+        Route::get('/create', 'create')->name('suppliers.create');
+        Route::post('/store', 'store')->name('supplier.store');
+        Route::get('/edit/{supplier}', 'edit')->name('suppliers.edit');
+        Route::put('/update/{supplier}', 'update')->name('suppliers.update');
     });
 });

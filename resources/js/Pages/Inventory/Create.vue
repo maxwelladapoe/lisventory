@@ -1,15 +1,11 @@
 <template>
     <Head title="Create Inventory" />
-    <AuthenticatedLayout title="Create Inventory">
-        <div>
-            <v-container>
-                <v-row>
-                    <v-col cols="12" lg="8">
-                        <AddItemForm categories="categories" />
-                    </v-col>
-                </v-row>
-            </v-container>
-        </div>
+    <AuthenticatedLayout hide-header="">
+        <v-card title="Create Inventory">
+            <v-card-text>
+                <AddItemForm :categories="categories" />
+            </v-card-text>
+        </v-card>
     </AuthenticatedLayout>
 </template>
 

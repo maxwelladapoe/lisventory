@@ -30,5 +30,10 @@ export default {
             icon: "mdi-receipt-text",
             to: "/invoices",
         },
+        {
+            title: "Reports",
+            icon: "mdi-chart-box",
+            to: "/reports",
+        },
     ],
 };

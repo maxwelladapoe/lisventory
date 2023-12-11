@@ -1,6 +1,6 @@
 <template>
     <Head title="Dashboard" />
-    <AuthenticatedLayout title="Dashboard" :breadcrumbs="breadcrumbs">
+    <AuthenticatedLayout title="Dashboard" :breadcrumbs="breadcrumbs" hide-header>
         <v-card>
             <v-card-text>
                 <div class="text-h6 text-medium-emphasis">

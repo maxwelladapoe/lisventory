@@ -1,171 +1,115 @@
 <template>
-    <div class="py-6">
-        <!-- <h2 class="font-bold text-2xl mb-6">
-            {{ props.isEditing ? "Edit item" : "Add Item to inventory" }}
-        </h2> -->
+    <template v-if="form.progress">
+        <v-progress-linear :model-value="form.progress.percentage" />
+    </template>
+    <v-form @submit.prevent="onSubmit" ref="addItemForm" class="space-y-2">
+        <v-row>
+            <v-col cols="12">
+                <v-label>Name</v-label>
+                <v-text-field
+                    placeholder="The name of the item"
+                    name="name"
+                    v-model="form.name"
+                    :error-messages="form.errors.name"
+            /></v-col>
 
-        <div class="w-full form-content relative">
-            <div
-                v-show="!isEditing && isSuccessful"
-                class="absolute z-2 bg-white w-full h-full"
-            >
-                <div class="h-full w-full flex flex-col justify-between">
-                    <div
-                        class="flex-1 flex flex-col items-center justify-center"
-                    >
-                        <div>
-                            <CircleCheckIcon
-                                size="150"
-                                class="text-success mx-auto"
-                                stroke-width="1"
-                            />
-                        </div>
-                        <p class="my-4 text-xl font-bold text-center">
-                            Your Item has been added successfully
-                        </p>
-                    </div>
+            <v-col cols="12" md="2" sm="4">
+                <v-label>Currency</v-label>
+                <v-combobox
+                    placeholder="Select a currency"
+                    name="currency"
+                    :items="currencyItems"
+                    v-model="form.currency"
+                    :error-messages="form.errors.currency"
+                />
+            </v-col>
+            <v-col cols="12" md="5" sm="4">
+                <v-label>Purchase price</v-label>
+                <v-text-field
+                    type="number"
+                    placeholder="Purchase price of the item"
+                    name="purchasePrice"
+                    v-model="form.purchase_price"
+                    :error-messages="form.errors.purchase_price"
+                />
+            </v-col>
+            <v-col cols="12" md="5" sm="4">
+                <v-label>Resell price</v-label>
+                <v-text-field
+                    type="number"
+                    placeholder="Resell price of the item"
+                    name="resellPrice"
+                    v-model="form.resell_price"
+                    :error-messages="form.errors.resell_price"
+                />
+            </v-col>
 
-                    <div class="w-full mt-6 space-x-4 flex justify-end">
-                        <button class="btn btn-outline" @click="addAnother">
-                            Add another item
-                        </button>
-                        <button
-                            class="btn btn-success"
-                            @click="emits('submissionSuccess')"
-                        >
-                            Done
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div>
-                <v-container v-if="form.progress">
-                    <v-progress-linear
-                        :model-value="form.progress.percentage"
-                    />
-                </v-container>
-                <v-form
-                    @submit="onSubmit"
-                    :validation-schema="validationSchema"
-                    :initialValues="initialData"
-                    ref="addItemForm"
-                    class="space-y-2"
+            <v-col cols="12" sm="6">
+                <v-label>Category</v-label>
+                <v-select
+                    placeholder="Select a category"
+                    name="categoryId"
+                    v-model="form.category_id"
+                    :error-messages="form.errors.category_id"
                 >
-                    <v-container>
-                        <div>
-                            <v-text-field
-                                variant="outlined"
-                                label="Name"
-                                placeholder="The name of the item"
-                                name="name"
-                                v-model="form.name"
-                            />
-                        </div>
-
-                        <v-row>
-                            <v-col cols="12" md="2" sm="4">
-                                <v-combobox
-                                    label="Currency"
-                                    placeholder="Select a currency"
-                                    name="currency"
-                                    :items="currencyItems"
-                                    variant="outlined"
-                                    v-model="form.currency"
-                                />
-                            </v-col>
-                            <v-col cols="12" md="5" sm="4">
-                                <v-text-field
-                                    variant="outlined"
-                                    type="number"
-                                    label="Purchase price"
-                                    placeholder="Purchase price of the item"
-                                    name="purchasePrice"
-                                    v-model="form.purchase_price"
-                                />
-                            </v-col>
-                            <v-col cols="12" md="5" sm="4">
-                                <v-text-field
-                                    variant="outlined"
-                                    type="number"
-                                    label="Resell price"
-                                    placeholder="Resell price of the item"
-                                    name="resellPrice"
-                                    v-model="form.resell_price"
-                                />
-                            </v-col>
-                        </v-row>
-
-                        <v-row>
-                            <v-col cols="12" sm="6">
-                                <v-select
-                                    label="Category"
-                                    placeholder="Select a category"
-                                    name="categoryId"
-                                    variant="outlined"
-                                    v-model="form.category_id"
-                                >
-                                    <!-- <option
+                    <!-- <option
                                 v-for="category in categories"
                                 :key="category.name"
                                 :value="category.id"
                             >
                                 {{ category.name }}
                             </option> -->
-                                </v-select>
-                            </v-col>
-                            <v-col cols="12" sm="6">
-                                <v-text-field
-                                    variant="outlined"
-                                    type="number"
-                                    label="Quantity"
-                                    placeholder="Quantity of items"
-                                    name="quantity"
-                                    v-model="form.quantity"
-                                />
-                            </v-col>
-                        </v-row>
+                </v-select>
+            </v-col>
+            <v-col cols="12" sm="6">
+                <v-label>Quantity</v-label>
+                <v-text-field
+                    type="number"
+                    placeholder="Quantity of items"
+                    name="quantity"
+                    v-model="form.quantity"
+                    :error-messages="form.errors.quantity"
+                />
+            </v-col>
 
-                        <div>
-                            <v-textarea
-                                placeholder="You can add any extra details here "
-                                rows="3"
-                                :resize="false"
-                                label="Description"
-                                name="description"
-                                variant="outlined"
-                                v-model="form.description"
-                            />
-                        </div>
+            <v-col cols="12">
+                <v-label>Description</v-label>
+                <v-textarea
+                    placeholder="You can add any extra details here "
+                    rows="3"
+                    :resize="false"
+                    name="description"
+                    v-model="form.description"
+                    :error-messages="form.errors.description"
+                />
+            </v-col>
 
-                        <div>
-                            <v-file-input
-                                name="attachments"
-                                multiple
-                                label="Item images (only images are allowed)"
-                                maxNumFiles="5"
-                                class="mb-6"
-                                variant="outlined"
-                                v-model="form.attachments"
-                            />
-                        </div>
-
-                        <div class="mt-6">
-                            <v-btn
-                                type="submit"
-                                block
-                                :disabled="form.processing"
-                                :loading="form.processing"
-                                size="x-large"
-                            >
-                                {{ isEditing ? "Update" : "Add Item" }}
-                            </v-btn>
-                        </div>
-                    </v-container>
-                </v-form>
-            </div>
+            <v-col cols="12">
+                <v-label>Item images (only images are allowed)</v-label>
+                <v-file-input
+                    name="attachments"
+                    multiple
+                    maxNumFiles="5"
+                    class="mb-6"
+                    variant="outlined"
+                    v-model="form.attachments"
+                    :error-messages="form.errors.attachments"
+                />
+            </v-col>
+        </v-row>
+        <div class="mt-6">
+            <v-btn
+                type="submit"
+                :disabled="form.processing"
+                :loading="form.processing"
+                color="primary"
+                elevation="0"
+                size="large"
+            >
+                {{ isEditing ? "Update" : "Add Item" }}
+            </v-btn>
         </div>
-    </div>
+    </v-form>
 </template>
 <script setup>
 import * as Yup from "yup";

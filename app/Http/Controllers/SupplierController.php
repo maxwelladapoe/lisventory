@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class SupplierController extends Controller
 {
@@ -15,36 +17,35 @@ class SupplierController extends Controller
     public function index(Request $request)
     {
 
-        if($request->query('search')){
 
-            if ($this->userTeamId) {
-                $suppliers = Supplier::search($request->query('search'))->where('team_id', $this->userTeamId)->paginate(25);
-            } else {
-                $suppliers = Supplier::search($request->query('search'))->where('user_id', $this->userId)->paginate(25);
-            }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Suppliers items fetched',
-                'suppliers' => $suppliers
-            ]);
-        }
+        // if($request->query('search')){
 
-        $suppliers = Supplier::where('team_id', $this->userTeamId)->latest()->paginate(25);
-        return response()->json([
-            'success' => true,
-            'message' => 'Suppliers items fetched',
+        //     if ($this->userTeamId) {
+        //         $suppliers = Supplier::search($request->query('search'))->where('team_id', $this->userTeamId)->paginate(25);
+        //     } else {
+        //         $suppliers = Supplier::search($request->query('search'))->where('user_id', $this->userId)->paginate(25);
+        //     }
+
+        //     return response()->json([
+        //         'success' => true,
+        //         'message' => 'Suppliers items fetched',
+        //         'suppliers' => $suppliers
+        //     ]);
+        // }
+
+        $user = Auth::user();
+        $suppliers = Supplier::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->latest()->paginate(50);
+        return Inertia::render('Suppliers/Index', [
             'suppliers' => $suppliers
         ]);
     }
 
+    public function create()
+    {
+        return Inertia::render('Suppliers/Create');
+    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -55,6 +56,8 @@ class SupplierController extends Controller
             'address' => ['nullable', 'string'],
         ]);
 
+
+        $user = Auth::user();
         $supplier = new Supplier();
         $supplier->name = $request->name;
         $supplier->email = $request->email;
@@ -62,9 +65,9 @@ class SupplierController extends Controller
         $supplier->address = $request->address;
         $supplier->mobile_no = $request->mobile_no;
         $supplier->status = 1;
-        $supplier->user_id = $this->userId;
-        $supplier->team_id = $this->userTeamId;
-        $supplier->updated_by = $this->userId;
+        $supplier->user_id = $user->id;
+        $supplier->team_id = $user->current_team_id;
+        $supplier->updated_by = $user->id;
         //TODO: add logo
 
         if ($supplier->save()) {
@@ -78,12 +81,7 @@ class SupplierController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Supplier  $supplier
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Supplier $supplier)
     {
         if ($supplier) {
@@ -97,13 +95,14 @@ class SupplierController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Supplier  $supplier
-     * @return \Illuminate\Http\Response
-     */
+
+    public function edit(Supplier $supplier)
+    {
+        return Inertia::render('Suppliers/Edit', [
+            'supplier' => $supplier
+        ]);
+    }
+
     public function update(Request $request, Supplier $supplier)
     {
         $this->validate($request, [
@@ -113,13 +112,14 @@ class SupplierController extends Controller
             'location' => ['nullable', 'string'],
             'address' => ['nullable', 'string'],
         ]);
+        $user = Auth::user();
         $itemName = $supplier->getOriginal("name");
         $supplier->name = $request->name;
         $supplier->email = $request->email;
         $supplier->location = $request->location;
         $supplier->address = $request->address;
         $supplier->mobile_no = $request->mobile_no;
-        $supplier->updated_by = $this->userId;
+        $supplier->updated_by = $user->id;
         //TODO: add logo
 
         if ($supplier->save()) {
@@ -141,7 +141,10 @@ class SupplierController extends Controller
      */
     public function destroy(Supplier $supplier)
     {
-        if (!$supplier->user_id === $this->userId) {
+
+        $user = Auth::user();
+
+        if (!$supplier->user_id === $user->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'You do not have an inventory item with this ID'

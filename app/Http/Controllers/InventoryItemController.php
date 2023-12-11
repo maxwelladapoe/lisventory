@@ -51,7 +51,7 @@ class InventoryItemController extends Controller
 
         $categories  = Category::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->latest()->get();
 
-        return Inertia::render('Inventory/CreateInventory', [
+        return Inertia::render('Inventory/Create', [
             'categories' => $categories
         ]);
     }
@@ -88,13 +88,7 @@ class InventoryItemController extends Controller
                     $inventoryItem->addMedia($file)->toMediaCollection('inventory_images');
                 }
             }
-            return response()->json([
-                'success' => true,
-                'message' => 'Your item has been added successfully',
-                'inventory_item' => $inventoryItem
-            ], 201);
-        } else {
-            return response()->json(['success' => false, 'message' => 'oops something went wrong'], 500);
+            return redirect()->route('inventory.index')->with('message', 'Inventory item Created Successfully');
         }
     }
 
