@@ -15,8 +15,9 @@ const DefaultTheme = {
     },
     colors: {
         primary: "#3C5CAA",
-        secondary: "#03003F",
-        info: "#539BFF",
+        //   primary: '#5D87FF',
+        secondary: '#49BEFF',
+        info: '#539BFF',
         success: "#13DEB9",
         accent: "#FFAB91",
         warning: "#FFAE1F",
@@ -67,6 +68,8 @@ const vuetify = createVuetify({
         },
         VCard: {
             rounded: "lg",
+            elevation: "10", 
+            class: "withbg", 
         },
         VTextField: {
             rounded: "lg",

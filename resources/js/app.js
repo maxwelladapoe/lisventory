@@ -4,6 +4,7 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy/dist/vue.m";
 import vuetify from "./Plugins/vuetify";
 import PerfectScrollbar from "vue3-perfect-scrollbar";
+import VueApexCharts from "vue3-apexcharts";
 import "./bootstrap";
 import "../css/style.scss";
 
@@ -22,6 +23,7 @@ createInertiaApp({
             .use(vuetify)
             .use(ZiggyVue)
             .use(PerfectScrollbar)
+            .use(VueApexCharts)
             .mount(el);
     },
     progress: {
