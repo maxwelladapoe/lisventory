@@ -4,7 +4,7 @@
     </template>
     <v-form @submit.prevent="onSubmit" ref="addItemForm" class="space-y-2">
         <v-row>
-            <v-col cols="12">
+            <v-col cols="12"  class="pb-0">
                 <v-label>Name</v-label>
                 <v-text-field
                     placeholder="The name of the item"
@@ -13,7 +13,7 @@
                     :error-messages="form.errors.name"
             /></v-col>
 
-            <v-col cols="12" md="2" sm="4">
+            <v-col cols="12" md="2" sm="4" class="pb-0">
                 <v-label>Currency</v-label>
                 <v-combobox
                     placeholder="Select a currency"
@@ -23,7 +23,7 @@
                     :error-messages="form.errors.currency"
                 />
             </v-col>
-            <v-col cols="12" md="5" sm="4">
+            <v-col cols="12" md="5" sm="4"  class="pb-0">
                 <v-label>Purchase price</v-label>
                 <v-text-field
                     type="number"
@@ -33,7 +33,7 @@
                     :error-messages="form.errors.purchase_price"
                 />
             </v-col>
-            <v-col cols="12" md="5" sm="4">
+            <v-col cols="12" md="5" sm="4"  class="pb-0">
                 <v-label>Resell price</v-label>
                 <v-text-field
                     type="number"
@@ -44,7 +44,7 @@
                 />
             </v-col>
 
-            <v-col cols="12" sm="6">
+            <v-col cols="12" sm="6" class="pb-0">
                 <v-label>Category</v-label>
                 <v-select
                     placeholder="Select a category"
@@ -61,7 +61,7 @@
                             </option> -->
                 </v-select>
             </v-col>
-            <v-col cols="12" sm="6">
+            <v-col cols="12" sm="6" class="pb-0">
                 <v-label>Quantity</v-label>
                 <v-text-field
                     type="number"
@@ -72,7 +72,7 @@
                 />
             </v-col>
 
-            <v-col cols="12">
+            <v-col cols="12" class="pb-0">
                 <v-label>Description</v-label>
                 <v-textarea
                     placeholder="You can add any extra details here "
@@ -84,7 +84,7 @@
                 />
             </v-col>
 
-            <v-col cols="12">
+            <v-col cols="12" class="pb-0">
                 <v-label>Item images (only images are allowed)</v-label>
                 <v-file-input
                     name="attachments"

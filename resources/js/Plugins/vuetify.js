@@ -10,7 +10,7 @@ const DefaultTheme = {
     name: "DefaultTheme",
     dark: false,
     variables: {
-        "border-color": "#eeeeee",
+        "border-color": "#5a6a85",
         "carousel-control-size": 10,
     },
     colors: {
