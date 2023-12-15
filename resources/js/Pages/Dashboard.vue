@@ -12,7 +12,13 @@
                         <WelcomeCard />
                     </v-col>
                     <v-col cols="12" lg="2">
-                        <StatsCard label="inventory" icon="mdi-package-variant" :count="5000" color="warning"/>
+                        <StatsCard label="Inventory" icon="mdi-package-variant" :count="5000" color="warning"/>
+                    </v-col>
+                     <v-col cols="12" lg="2">
+                        <StatsCard label="Orders" icon="mdi-cart-variant" :count="5000"/>
+                    </v-col>
+                     <v-col cols="12" lg="2">
+                        <StatsCard label="Customers" icon="mdi-account-multiple-outline" :count="5000"  color="warning"/>
                     </v-col>
                 </v-row>
             </v-col>

@@ -15,7 +15,7 @@ class InvoiceController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Inertia\Response
      */
     public function index()
     {
@@ -27,7 +27,6 @@ class InvoiceController extends Controller
         return Inertia::render('Invoices/Index', [
             'invoices' => $invoices,
         ]);
-
     }
 
     public function view(Request $request)
@@ -42,6 +41,14 @@ class InvoiceController extends Controller
             'invoice' => $invoice,
         ]);
     }
+
+
+    public function create()
+    {
+
+        return Inertia::render('Invoices/Create');
+    }
+
 
     public function store(Request $request)
     {

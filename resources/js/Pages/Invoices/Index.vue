@@ -83,11 +83,10 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head,Link } from "@inertiajs/vue3";
 import { usePage } from "@inertiajs/vue3";
 import { computed } from "vue";
 import { TableHeaders, TableActionItems } from "@/Configs/InvoicesConfig";
-import { Link } from "@inertiajs/vue3";
 import { useTimeAgo } from "@vueuse/core";
 
 const page = usePage();

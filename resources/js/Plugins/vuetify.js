@@ -68,33 +68,50 @@ const vuetify = createVuetify({
         },
         VCard: {
             rounded: "lg",
-            elevation: "10", 
-            class: "withbg", 
+            elevation: "10",
+            class: "withbg",
         },
         VTextField: {
             rounded: "lg",
             variant: "outlined",
             density: "comfortable",
+            hideDetails: "auto",
         },
         VTextarea: {
             rounded: "lg",
             variant: "outlined",
             density: "comfortable",
+            hideDetails: "auto",
+        },
+        VDatePicker: {
+            rounded: "lg",
+            variant: "outlined",
+            density: "comfortable",
+            hideDetails: "auto",
+        },
+        VAutocomplete: {
+            rounded: "lg",
+            variant: "outlined",
+            density: "comfortable",
+            hideDetails: "auto",
         },
         VCombobox: {
             rounded: "lg",
             variant: "outlined",
             density: "comfortable",
+            hideDetails: "auto",
         },
         VSelect: {
             rounded: "lg",
             variant: "outlined",
             density: "comfortable",
+            hideDetails: "auto",
         },
         VFileInput: {
             rounded: "lg",
             variant: "outlined",
             density: "comfortable",
+            hideDetails: "auto",
         },
         VTooltip: {
             // set v-tooltip default location to top
