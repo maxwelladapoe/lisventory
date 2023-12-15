@@ -2,13 +2,13 @@
     <v-row>
         <v-col cols="12" lg="3" sm="6" v-for="card in productsCard" :key="card.title">
             <v-card>
-                <RouterLink :to="card.link">
+                <Link :href="card.link">
                     <v-img :src="card.photo" height="100%" class="rounded-t-md"></v-img>
-                </RouterLink>
+                </Link>
                 <div class="d-flex justify-end mr-4 mt-n5">
                     <v-btn size="40" icon class="bg-primary d-flex">
                         <v-avatar size="30" class="text-white">
-                            
+
                                     <v-icon
                                     icon="mdi mdi-basket"
                                     size="15"
@@ -36,5 +36,6 @@
     </v-row>
 </template>
 <script setup>
+import { Link } from "@inertiajs/vue3";
 import { productsCard } from '@/Data/DashboardData';
 </script>

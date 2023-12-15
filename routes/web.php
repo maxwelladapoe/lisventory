@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InventoryItemController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SupplierController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Http\Controllers\InventoryItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +19,7 @@ use App\Http\Controllers\InventoryItemController;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -43,7 +46,6 @@ Route::middleware([
         Route::post('/store', 'store')->name('inventory.store');
     });
 
-
     Route::controller(CustomerController::class)->prefix('customers')->group(function () {
         Route::get('/', 'index')->name('customers.index');
         Route::get('/create', 'create')->name('customers.create');
@@ -59,4 +61,23 @@ Route::middleware([
         Route::get('/edit/{supplier}', 'edit')->name('suppliers.edit');
         Route::put('/update/{supplier}', 'update')->name('suppliers.update');
     });
+    Route::controller(OrderController::class)->prefix('orders')->group(function () {
+        Route::get('/', 'index')->name('orders.index');
+        Route::get('/create', 'create')->name('orders.create');
+        Route::post('/store', 'store')->name('orders.store');
+        Route::get('/edit/{order}', 'edit')->name('orders.edit');
+        Route::put('/update/{order}', 'update')->name('orders.update');
+    });
+    Route::controller(InvoiceController::class)->prefix('invoices')->group(function () {
+        Route::get('/', 'index')->name('invoices.index');
+        Route::get('/create', 'create')->name('invoices.create');
+        Route::post('/store', 'store')->name('invoices.store');
+        Route::get('/edit/{invoice}', 'edit')->name('invoices.edit');
+        Route::put('/update/{invoice}', 'update')->name('invoices.update');
+    });
+    Route::controller(ReportController::class)->prefix('reports')->group(function () {
+        Route::get('/', 'index')->name('reports.index');
+        Route::get('/report/{type}', 'show')->name('reports.edit');
+    });
+
 });

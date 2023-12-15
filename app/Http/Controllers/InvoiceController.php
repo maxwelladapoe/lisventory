@@ -7,6 +7,8 @@ use App\Models\InvoiceDiscount;
 use App\Models\InvoiceItem;
 use App\Models\InvoiceTax;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class InvoiceController extends Controller
 {
@@ -17,23 +19,27 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoices = Invoice::where('team_id', $this->userTeamId)
-            ->orWhere('user_id', $this->userId)->latest()->paginate(50);
-        return response()->json([
-            'success' => true,
-            'message' => 'Invoices fetched',
-            'invoices' => $invoices
+        $user = Auth::user();
+
+        $invoices = Invoice::where('team_id', $user->current_team_id)
+            ->orWhere('user_id', $user->id)->latest()->paginate(50);
+
+        return Inertia::render('Invoices/Index', [
+            'invoices' => $invoices,
         ]);
+
     }
 
     public function view(Request $request)
     {
-        $invoice = Invoice::where('team_id', $this->userTeamId)
-            ->orWhere('user_id', $this->userId)->latest()->where('id', $request->id)->paginate(50);
+        $user = Auth::user();
+
+        $invoice = Invoice::where('team_id', $user->current_team_id)
+            ->orWhere('user_id', $user->id)->latest()->where('id', $request->id)->paginate(50);
         return response()->json([
             'success' => true,
             'message' => 'Invoice fetched',
-            'invoice' => $invoice
+            'invoice' => $invoice,
         ]);
     }
 
@@ -52,13 +58,13 @@ class InvoiceController extends Controller
             "invoice_items.*.inventory_item_id" => ['required', 'string'],
         ]);
 
-
+        $user = Auth::user();
 
         $invoice = new Invoice();
         $invoice->description = $request->description;
         $invoice->customer_id = $request->customer_id;
-        $invoice->user_id = $this->userId;
-        $invoice->team_id = $this->userTeamId;
+        $invoice->user_id = $user->id;
+        $invoice->team_id = $user->current_team_id;
         $invoice->status = 1;
         $invoice->invoice_no = $request->invoice_number;
         $invoice->date = $request->invoice_date;
@@ -97,8 +103,6 @@ class InvoiceController extends Controller
                 }
             }
 
-
-
             return response()->json([
                 'success' => true,
                 'message' => 'invoice saved successfully',
@@ -107,8 +111,6 @@ class InvoiceController extends Controller
             return response()->json(['success' => false, 'message' => 'oops something went wrong'], 500);
         }
     }
-
-
 
     /**
      * Display the specified resource.
@@ -123,7 +125,7 @@ class InvoiceController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Invoice fetched',
-            'invoice' => $invoice->loadMissing(['invoiceItems'])
+            'invoice' => $invoice->loadMissing(['invoiceItems']),
         ]);
     }
 

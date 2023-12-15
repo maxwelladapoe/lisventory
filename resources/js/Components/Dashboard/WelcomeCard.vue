@@ -1,17 +1,13 @@
 <template>
-    <v-card class="bg-lightprimary">
-        <v-card-item class="pa-0 overflow-visible">
-            <div
-                class="d-sm-flex align-center justify-space-between overflow-visible"
-            >
-                <v-card-title class="text-h5 pa-6">
-                    Welcome back,
-                    {{ $page.props.auth.user.name }}!
+    <v-card class="bg-lightprimary overflow-scroll">
+        <v-card-item class="pa-0">
+            <div class="d-sm-flex align-center justify-space-between pt-6 px-6">
+                <v-card-title class="text-h5 pb-6">
+                    <p>Welcome back,</p>
+                    <p>{{ $page.props.auth.user.name }}!</p>
                 </v-card-title>
 
-                <div class="position-relative">
-                    <img src="../../../images/group1.png" width="180" />
-                </div>
+                <img src="../../../images/group1.png" height="200" />
             </div>
         </v-card-item>
     </v-card>

@@ -2,37 +2,37 @@ export default {
     items: [
         {
             title: "Dashboard",
-            icon: "mdi-view-dashboard",
+            icon: "mdi-view-dashboard-outline",
             to: "/dashboard",
         },
         {
             title: "Inventory",
-            icon: "mdi-package",
+            icon: "mdi-package-variant",
             to: "/inventory",
         },
         {
             title: "Orders",
-            icon: "mdi-cash-marker",
+            icon: "mdi-cart-variant",
             to: "/orders",
         },
         {
             title: "Customers",
-            icon: "mdi-account-group",
+            icon: "mdi-account-multiple-outline",
             to: "/customers",
         },
         {
             title: "Suppliers",
-            icon: "mdi-briefcase-variant",
+            icon: "mdi-briefcase-variant-outline",
             to: "/suppliers",
         },
         {
             title: "Invoices",
-            icon: "mdi-receipt-text",
+            icon: "mdi-receipt-text-outline",
             to: "/invoices",
         },
         {
             title: "Reports",
-            icon: "mdi-chart-box",
+            icon: "mdi-chart-box-outline",
             to: "/reports",
         },
     ],

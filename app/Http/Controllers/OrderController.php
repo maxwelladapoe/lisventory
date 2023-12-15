@@ -7,6 +7,8 @@ use App\Models\order;
 use App\Models\OrderItem;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
@@ -17,13 +19,15 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::where('team_id', $this->userTeamId)
-            ->orWhere('user_id', $this->userId)->latest()->paginate(50);
-        return response()->json([
-            'success' => true,
-            'message' => 'Orders fetched',
-            'orders' => $orders
+        $user = Auth::user();
+
+        $orders = Order::where('team_id', $user->current_team_id)
+            ->orWhere('user_id', $user->id)->latest()->paginate(50);
+
+        return Inertia::render('Orders/Index', [
+            'orders' => $orders,
         ]);
+
     }
 
     /**
@@ -51,19 +55,20 @@ class OrderController extends Controller
             "order_items.*.quantity" => ['required', 'string'],
             "order_items.*.inventory_item_id" => ['required', 'string'],
         ]);
+$user = Auth::user();
 
         // add to the database
         $order = new Order();
         $order->description = $request->description;
         $order->customer_id = $request->customer_id;
-        $order->user_id = $this->userId;
-        $order->team_id = $this->userTeamId;
+        $order->user_id = $user->id;
+        $order->team_id = $user->current_team_id;
         $order->status = 1;
         $order->payment_status = 1;
         $order->date = Carbon::now();
         if ($order->save()) {
 
-            $orderTotalCost =0;
+            $orderTotalCost = 0;
 
             foreach ($request->order_items as $orderItem) {
                 $inventoryItem = InventoryItem::find($orderItem['inventory_item_id']);
@@ -73,15 +78,15 @@ class OrderController extends Controller
                 $newOrderItem->order_id = $order->id;
                 $newOrderItem->quantity = $orderItem['quantity'];
                 $newOrderItem->unit_price = $inventoryItem->resell_price;
-                $amount =$inventoryItem->resell_price * $orderItem['quantity'];
-                $newOrderItem->amount =$amount;
-                $orderTotalCost +=$amount;
+                $amount = $inventoryItem->resell_price * $orderItem['quantity'];
+                $newOrderItem->amount = $amount;
+                $orderTotalCost += $amount;
                 $newOrderItem->save();
-                $inventoryItem->quantity =  $inventoryItem->quantity -  $orderItem['quantity'];
+                $inventoryItem->quantity = $inventoryItem->quantity - $orderItem['quantity'];
                 $inventoryItem->save();
             }
 
-            $order->total=$orderTotalCost;
+            $order->total = $orderTotalCost;
             $order->save();
 
             return response()->json([
