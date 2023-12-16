@@ -313,26 +313,22 @@
 
                 <v-select label="Accept Payment Via" dirty class="my-6" />
 
-                <div class="d-flex align-center justify-space-between">
-                    <label class="v-label" for="payment-terms">
-                        Payment Terms
-                    </label>
-                    <div>
-                        <v-switch dirty />
-                    </div>
+                <div class="d-flex align-center justify-space-between pa-0">
+                        <div><v-label for="payment-terms" text="Payment Terms" /></div>
+                    <div><v-switch dirty /></div>
                 </div>
-                <div class="d-flex align-center justify-space-between">
-                    <label class="v-label" for="client-notes">
-                        Client Notes
-                    </label>
-                    <div>
-                        <v-switch dirty />
-                    </div>
+                <div class="d-flex align-center justify-space-between pa-0">
+                       <div><v-label text="Client Notes" for="client-notes" /></div> 
+                    <div><v-switch dirty /></div>
                 </div>
-                <div class="d-flex align-center justify-space-between">
-                    <label class="v-label" for="payment-stub">
-                        Payment Stub
-                    </label>
+                <div class="d-flex align-center justify-space-between pa-0">
+                    <div>
+                        <v-label
+                            text="Payment Stub"
+                            for="payment-stub"
+                            class="ma-0 pa-0 block"
+                        />
+                    </div>
                     <div>
                         <v-switch dirty />
                     </div>

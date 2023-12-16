@@ -1,6 +1,6 @@
 <template>
     <Head title="Create Inventory" />
-    <AuthenticatedLayout hide-header="">
+    <AuthenticatedLayout hide-header>
         <v-card title="Create Inventory">
             <v-card-text>
                 <AddItemForm :categories="categories" />

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\IncreaseOrDecreasePercentageStats;
 use App\Traits\UUIDs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,8 +14,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 class InventoryItem extends Model implements HasMedia
 {
-    use UUIDs, HasFactory, Searchable;
-    use InteractsWithMedia;
+    use UUIDs, HasFactory, Searchable,InteractsWithMedia;
 
     public function user()
     {

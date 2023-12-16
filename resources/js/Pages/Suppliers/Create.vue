@@ -1,15 +1,11 @@
 <template>
     <Head title="Create Supplier" />
-    <AuthenticatedLayout>
-        <div>
-            <v-container>
-                <v-row>
-                    <v-col cols="12" lg="8">
-                        <AddSupplierForm categories="categories" />
-                    </v-col>
-                </v-row>
-            </v-container>
-        </div>
+    <AuthenticatedLayout  hide-header>
+        <v-card title="Create Supplier">
+            <v-card-item>
+                <AddSupplierForm />
+            </v-card-item>
+        </v-card>
     </AuthenticatedLayout>
 </template>
 

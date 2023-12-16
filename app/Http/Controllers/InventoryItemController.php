@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateInventoryItemRequest;
+use App\Http\Requests\DeleteInventoryItemRequest;
+use App\Http\Requests\UpdateInventoryItemRequest;
 use App\Models\Category;
 use App\Models\InventoryItem;
 use Illuminate\Http\Request;
@@ -17,31 +20,15 @@ class InventoryItemController extends Controller
     public function index(Request $request)
     {
 
-
-        // if ($request->query('search')) {
-        //     if ($this->userTeamId) {
-        //         $inventoryItems = InventoryItem::search($request->query('search'))
-        //             ->where('team_id', $this->userTeamId)->paginate(25);
-        //     } else {
-        //         $inventoryItems = InventoryItem::search($request->query('search'))
-        //             ->where('user_id', $this->userId)->paginate(25);
-        //     }
-
-        //     return response()->json([
-        //         'success' => true,
-        //         'message' => 'inventory items fetched',
-        //         'inventory_items' => $inventoryItems
-        //     ]);
-        // }
-
-
         $user = Auth::user();
-
-        $inventoryItems = InventoryItem::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->latest()->paginate(25);
+        $search = strtolower(trim($request->search));
+        $inventoryItems = InventoryItem::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->when($search, function ($query, $search) {
+            $query->where('name', 'LIKE', '%' . $search . '%');
+        })->latest()->paginate(25);
 
 
         return Inertia::render('Inventory/Index', [
-            'inventory' => $inventoryItems
+            'inventory' => $inventoryItems->withQueryString()
         ]);
     }
 
@@ -49,26 +36,15 @@ class InventoryItemController extends Controller
     {
         $user = Auth::user();
 
-        $categories  = Category::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->latest()->get();
+        $categories = Category::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->latest()->get();
 
         return Inertia::render('Inventory/Create', [
             'categories' => $categories
         ]);
     }
 
-    public function store(Request $request)
+    public function store(CreateInventoryItemRequest $request)
     {
-        $this->validate($request, [
-            'name' => ['required', 'string'],
-            'purchase_price' => ['required', 'integer'],
-            'resell_price' => ['required', 'integer'],
-            'description' => ['nullable', 'string'],
-            'currency' => ['required', 'string'],
-            'quantity' => ['required', 'integer'],
-            'category_id' => ['nullable', 'integer'],
-            'files' => ['nullable', 'array']
-        ]);
-
         $inventoryItem = new InventoryItem();
         $inventoryItem->name = $request->name;
         $inventoryItem->description = $request->description;
@@ -80,68 +56,54 @@ class InventoryItemController extends Controller
         $inventoryItem->user_id = Auth::user()->id;
         $inventoryItem->team_id = Auth::user()->current_team_id;
 
-
-
         if ($inventoryItem->save()) {
             if ($request['files']) {
                 foreach ($request['files'] as $file) {
                     $inventoryItem->addMedia($file)->toMediaCollection('inventory_images');
                 }
             }
-            return redirect()->route('inventory.index')->with('message', 'Inventory item Created Successfully');
+            return redirect()->route('inventory.index')->with('success', 'Inventory item Created Successfully');
         }
     }
 
-    public function update(Request $request, $id)
+
+    public function edit(InventoryItem $inventory)
     {
-        $this->validate($request, [
-            'name' => ['required', 'string'],
-            'purchase_price' => ['required', 'integer'],
-            'resell_price' => ['required', 'integer'],
-            'description' => ['nullable', 'string'],
-            'currency' => ['required', 'string'],
-            'quantity' => ['required', 'integer'],
-            'category_id' => ['nullable', 'integer'],
+        $user = Auth::user();
+
+        $categories = Category::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->latest()->get();
+
+        return Inertia::render('Inventory/Edit', [
+            'inventory' => $inventory,
+            'categories' => $categories
         ]);
+    }
 
-        $inventoryItem = InventoryItem::find($id);
-        $itemName = $inventoryItem->getOriginal("name");
-        $inventoryItem->name = $request->name;
-        $inventoryItem->description = $request->description;
-        $inventoryItem->currency = $request->currency;
-        $inventoryItem->purchase_price = $request->purchase_price;
-        $inventoryItem->resell_price = $request->resell_price;
-        $inventoryItem->quantity = $request->quantity;
-        $inventoryItem->category_id = $request->category_id;
-        $inventoryItem->user_id = Auth::user()->id;
-        if ($inventoryItem->save()) {
-            return response()->json([
-                'success' => true,
-                'message' => "$itemName been updated successfully",
-                'inventory_item' => $inventoryItem
-            ], 201);
-        } else {
-            return response()->json(['success' => false, 'message' => 'oops something went wrong'], 500);
+
+    public function update(InventoryItem $inventory, UpdateInventoryItemRequest $request)
+    {
+        $itemName = $inventory->getOriginal("name");
+        $inventory->name = $request->name;
+        $inventory->description = $request->description;
+        $inventory->currency = $request->currency;
+        $inventory->purchase_price = $request->purchase_price;
+        $inventory->resell_price = $request->resell_price;
+        $inventory->quantity = $request->quantity;
+        $inventory->category_id = $request->category_id;
+        $inventory->user_id = Auth::user()->id;
+        if ($inventory->save()) {
+            return back()->with('success', $itemName . ' updated successfully');
         }
     }
 
-    public function destroy($id)
+    public function destroy(DeleteInventoryItemRequest $request)
     {
-        $inventoryItem = InventoryItem::find($id);
-        if (!$inventoryItem->user_id == Auth::user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You do not have an inventory item with this ID'
-            ], 400);
-        }
-        if ($inventoryItem->delete()) {
-            return response()->json([
-                'success' => true,
-                'message' => "$inventoryItem->name has deleted successfully",
-                'inventory_item' => $inventoryItem
-            ], 201);
-        } else {
-            return response()->json(['success' => false, 'message' => 'oops something went wrong'], 500);
+        $inventory = InventoryItem::find($request->id);
+
+        $itemName = $inventory->getOriginal("name");
+
+        if ($inventory->delete()) {
+            return back()->with('success', $itemName . ' deleted successfully');
         }
     }
 }

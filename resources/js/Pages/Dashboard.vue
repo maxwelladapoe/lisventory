@@ -5,20 +5,25 @@
         :breadcrumbs="breadcrumbs"
         hide-header
     >
+       
         <v-row>
             <v-col>
                 <v-row>
                     <v-col cols="12" lg="4">
                         <WelcomeCard />
                     </v-col>
-                    <v-col cols="12" lg="2">
-                        <StatsCard label="Inventory" icon="mdi-package-variant" :count="5000" color="warning"/>
+                    <v-col cols="12" sm="6" lg="2">
+                     
+                        <StatsCard label="Inventory" icon="mdi-package-variant" :count="stats.inventory.count" color="warning"/>
                     </v-col>
-                     <v-col cols="12" lg="2">
-                        <StatsCard label="Orders" icon="mdi-cart-variant" :count="5000"/>
+                     <v-col cols="12" sm="6" lg="2">
+                        <StatsCard label="Orders" icon="mdi-cart-variant" :count="stats.order.count"/>
                     </v-col>
-                     <v-col cols="12" lg="2">
-                        <StatsCard label="Customers" icon="mdi-account-multiple-outline" :count="5000"  color="warning"/>
+                     <v-col cols="12" sm="6" lg="2">
+                        <StatsCard label="Customers" icon="mdi-account-multiple-outline" :count="stats.customer.count"  color="warning"/>
+                    </v-col>
+                        <v-col cols="12" sm="6" lg="2">
+                        <StatsCard label="Suppliers" icon="mdi-briefcase-variant-outline" :count="stats.supplier.count"/>
                     </v-col>
                 </v-row>
             </v-col>
@@ -70,7 +75,8 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
+import { Head,usePage } from "@inertiajs/vue3";
+import {computed} from "vue";
 // import group1 from "../../images/group1.png"
 import MonthlyEarnings from "@/Components/Dashboard/MonthlyEarnings.vue";
 import ProductCards from "@/Components/Dashboard/ProductCards.vue";
@@ -81,6 +87,8 @@ import YearlyBreakup from "@/Components/Dashboard/YearlyBreakup.vue";
 import WelcomeCard from "@/Components/Dashboard/WelcomeCard.vue";
 import StatsCard from "@/Components/Dashboard/StatsCard.vue";
 
+const page = usePage();
+const stats = computed(()=>page.props.stats);
 const breadcrumbs = [
     {
         title: "Dashboard",

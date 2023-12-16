@@ -1,15 +1,11 @@
 <template>
     <Head title="Edit Customer" />
-    <AuthenticatedLayout>
-        <div>
-            <v-container>
-                <v-row>
-                    <v-col cols="12" lg="8">
-                        <AddCustomerForm categories="categories" is-editing :selected-item="customer" />
-                    </v-col>
-                </v-row>
-            </v-container>
-        </div>
+    <AuthenticatedLayout hide-header>
+        <v-card title="Edit Customer">
+            <v-card-item>
+                <AddCustomerForm is-editing :selected-item="customer" />
+            </v-card-item>
+        </v-card>
     </AuthenticatedLayout>
 </template>
 
@@ -18,7 +14,7 @@ import AddCustomerForm from "@/Components/Forms/AddCustomerForm.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import { usePage } from "@inertiajs/vue3";
-import {computed} from "vue";
+import { computed } from "vue";
 
 const page = usePage();
 

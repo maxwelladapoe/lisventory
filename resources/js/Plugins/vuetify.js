@@ -117,6 +117,9 @@ const vuetify = createVuetify({
             // set v-tooltip default location to top
             location: "top",
         },
+        VSwitch: {
+            hideDetails: "auto",
+        },
         VLabel: {
             class: "font-weight-bold mb-1",
         },

@@ -3,7 +3,9 @@
     <AuthenticatedLayout hide-header>
         <v-card title="Edit Inventory">
             <v-card-text>
-                <AddItemForm :categories="categories" is-editing />
+                <AddItemForm :categories="categories" 
+                :selected-item="inventory"
+                is-editing />
             </v-card-text>
         </v-card>
     </AuthenticatedLayout>
@@ -19,5 +21,8 @@ import { computed } from "vue";
 const page = usePage();
 const categories = computed(() => {
     return page.props.categories;
+});
+const inventory = computed(() => {
+    return page.props.inventory;
 });
 </script>

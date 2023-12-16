@@ -4,7 +4,7 @@
     </template>
     <v-form @submit.prevent="onSubmit" ref="addItemForm" class="space-y-2">
         <v-row>
-            <v-col cols="12"  class="pb-0">
+            <v-col cols="12">
                 <v-label>Name</v-label>
                 <v-text-field
                     placeholder="The name of the item"
@@ -13,9 +13,9 @@
                     :error-messages="form.errors.name"
             /></v-col>
 
-            <v-col cols="12" md="2" sm="4" class="pb-0">
+            <v-col cols="12" md="2" sm="4">
                 <v-label>Currency</v-label>
-                <v-combobox
+                <v-autocomplete
                     placeholder="Select a currency"
                     name="currency"
                     :items="currencyItems"
@@ -23,7 +23,7 @@
                     :error-messages="form.errors.currency"
                 />
             </v-col>
-            <v-col cols="12" md="5" sm="4"  class="pb-0">
+            <v-col cols="12" md="5" sm="4">
                 <v-label>Purchase price</v-label>
                 <v-text-field
                     type="number"
@@ -33,7 +33,7 @@
                     :error-messages="form.errors.purchase_price"
                 />
             </v-col>
-            <v-col cols="12" md="5" sm="4"  class="pb-0">
+            <v-col cols="12" md="5" sm="4">
                 <v-label>Resell price</v-label>
                 <v-text-field
                     type="number"
@@ -44,7 +44,7 @@
                 />
             </v-col>
 
-            <v-col cols="12" sm="6" class="pb-0">
+            <v-col cols="12" sm="6">
                 <v-label>Category</v-label>
                 <v-select
                     placeholder="Select a category"
@@ -61,7 +61,7 @@
                             </option> -->
                 </v-select>
             </v-col>
-            <v-col cols="12" sm="6" class="pb-0">
+            <v-col cols="12" sm="6">
                 <v-label>Quantity</v-label>
                 <v-text-field
                     type="number"
@@ -72,7 +72,7 @@
                 />
             </v-col>
 
-            <v-col cols="12" class="pb-0">
+            <v-col cols="12">
                 <v-label>Description</v-label>
                 <v-textarea
                     placeholder="You can add any extra details here "
@@ -84,7 +84,7 @@
                 />
             </v-col>
 
-            <v-col cols="12" class="pb-0">
+            <v-col cols="12">
                 <v-label>Item images (only images are allowed)</v-label>
                 <v-file-input
                     name="attachments"
@@ -112,10 +112,8 @@
     </v-form>
 </template>
 <script setup>
-import * as Yup from "yup";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import CountryCurrency from "@/Data/Currencies.json";
-import { useToast } from "vue-toastification";
 import { useForm } from "@inertiajs/vue3";
 
 const emits = defineEmits(["submissionSuccess"]);
@@ -137,19 +135,8 @@ const props = defineProps({
         default: false,
     },
 });
-const toast = useToast();
 
 const isSuccessful = ref(false);
-const validationSchema = Yup.object().shape({
-    name: Yup.string().required().label("Item name"),
-    currency: Yup.string().required().label("Currency"),
-    categoryId: Yup.number().label("Category"),
-    quantity: Yup.number().required().label("Quantity"),
-    purchasePrice: Yup.number().min(0.01).required().label("Purchase price"),
-    resellPrice: Yup.number().min(0.01).required().label("Resell price"),
-    description: Yup.string().label("Item description"),
-    attachments: Yup.mixed().label("attachments"),
-});
 
 const form = useForm({
     name: null,
@@ -167,13 +154,19 @@ const initialData = {
 };
 
 const onSubmit = () => {
-    form.post("/inventory/store", {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-            isSuccessful.value = true;
-        },
-    });
+    if (props.isEditing && props.selectedItem) {
+        form.put(`/inventory/update/${props.selectedItem.id}`, {
+            preserveScroll: true,
+        });
+    } else {
+        form.post("/inventory/store", {
+            preserveScroll: true,
+            onSuccess: () => {
+                form.reset();
+                isSuccessful.value = true;
+            },
+        });
+    }
 };
 
 const addAnother = () => {
@@ -186,5 +179,31 @@ const reset = () => {
 
 const currencyItems = computed(() => {
     return CountryCurrency.map((cc) => cc.currencyCode);
+});
+
+onMounted(() => {
+    if (props.selectedItem && props.isEditing) {
+        form.name = props.selectedItem.name;
+
+        form.currency = props.selectedItem.currency;
+
+        form.category_id = props.selectedItem.category_id;
+
+        form.quantity = props.selectedItem.quantity;
+
+        form.purchase_price = props.selectedItem.purchase_price;
+
+        form.resell_price = props.selectedItem.resell_price;
+
+        form.description = props.selectedItem.description;
+
+        //      currency: null,
+        // category_id: null,
+        // quantity: null,
+        // purchase_price: null,
+        // resell_price: null,
+        // description: null,
+        // attachments: null,
+    }
 });
 </script>

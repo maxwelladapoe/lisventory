@@ -10,17 +10,6 @@
         </template>
 
         <div>
-            <!-- <div class="mb-6 mt-6">
-                <v-text-field
-                    v-model="search"
-                    label="Search"
-                    prepend-inner-icon="mdi-magnify"
-                    single-line
-                    variant="outlined"
-                    hide-details
-                ></v-text-field>
-            </div> -->
-
             <v-card>
                 <v-card-text>
                     <v-row>
@@ -29,6 +18,8 @@
                                 variant="outlined"
                                 placeholder="Search"
                                 density="compact"
+                                v-model="searchQuery"
+                                @update:model-value="debouncedFn"
                             />
                         </v-col>
                     </v-row>
@@ -38,7 +29,6 @@
                         :items-length="paginationItems.total"
                         :items="inventory"
                         item-value="name"
-                       
                     >
                         <template v-slot:item.created_at="{ item }">
                             {{ getTimeAgo(item.created_at) }}
@@ -74,22 +64,18 @@
                                     <v-list>
                                         <v-list-item
                                             v-for="(
-                                                item, i
+                                                actionItem, i
                                             ) in TableActionItems"
                                             :key="i"
+                                            @click="
+                                                menuActionClick(
+                                                    actionItem,
+                                                    item
+                                                )
+                                            "
                                         >
                                             <v-list-item-title>
-                                                <template v-if="item.to">
-                                                    <Link
-                                                        :href="to(item.id)"
-                                                        as="div"
-                                                    >
-                                                        {{ item.title }}
-                                                    </Link>
-                                                </template>
-                                                <template>
-                                                    {{ item.title }}
-                                                </template>
+                                                {{ actionItem.title }}
                                             </v-list-item-title>
                                         </v-list-item>
                                     </v-list>
@@ -105,16 +91,17 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Link, router } from "@inertiajs/vue3";
 import { usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { TableHeaders, TableActionItems } from "@/Configs/inventoryConfig";
-import { useTimeAgo } from "@vueuse/core";
+import { useTimeAgo, useDebounceFn } from "@vueuse/core";
 
 const page = usePage();
 const inventory = computed(() => {
     return page.props.inventory.data;
 });
+const searchQuery = ref();
 
 const paginationItems = computed(() => {
     const inv = page.props.inventory;
@@ -127,4 +114,15 @@ const paginationItems = computed(() => {
 function getTimeAgo(date) {
     return useTimeAgo(date).value;
 }
+
+function menuActionClick(actionItem, rowItem) {
+    if (actionItem.id === "edit") {
+        router.visit(`/inventory/edit/${rowItem.id}`);
+    }
+}
+
+const debouncedFn = useDebounceFn(() => {
+    // search
+    router.visit(`/inventory?search=${searchQuery.value}`);
+}, 1000);
 </script>

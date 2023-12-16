@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventoryItemController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\OrderController;
@@ -36,14 +37,15 @@ Route::middleware([
     'verified',
 ])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 
     Route::controller(InventoryItemController::class)->prefix('inventory')->group(function () {
         Route::get('/', 'index')->name('inventory.index');
         Route::get('/create', 'create')->name('inventory.create');
         Route::post('/store', 'store')->name('inventory.store');
+        Route::get('/edit/{inventory}', 'edit')->name('inventory.edit');
+        Route::put('/update/{inventory}', 'update')->name('inventory.update');
     });
 
     Route::controller(CustomerController::class)->prefix('customers')->group(function () {

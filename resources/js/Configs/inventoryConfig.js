@@ -9,10 +9,8 @@ export const TableHeaders = [
 ];
 
 export const TableActionItems = [
-    { title: "Edit", to:(id)=>{
-       return `inventory/edit/${id}`
-    } },
-    { title: "Preview" },
-    { title: "See quantities" },
-    { title: "Delete" },
+    { title: "Edit", id: "edit" },
+    { title: "Preview", id: "preview" },
+    { title: "See quantities", id: "seeQuantities" },
+    { title: "Delete", id: "delete" },
 ];

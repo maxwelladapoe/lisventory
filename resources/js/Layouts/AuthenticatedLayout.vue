@@ -105,7 +105,7 @@ import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 
 const drawer = ref(true);
 const rail = ref(false);
-
+const toast = useToast();
 defineProps({
     title: {
         type: String,
@@ -138,16 +138,16 @@ const avatar = computed(() => {
 const user = computed(() => page.props.auth.user);
 
 watch(
-    () => page,
+    () => page.props.flash,
     () => {
-        const toast = useToast();
         const flash = page.props.flash;
-        if (flash.success) {
+        if (flash && flash.success) {
             toast.success(flash.success);
-        } else if (flash.error) {
+        } else if (flash && flash.error) {
             toast.error(flash.error);
         }
-    }
+    },
+    { immediate: true }
 );
 
 // onMounted(() => {
