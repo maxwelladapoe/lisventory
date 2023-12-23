@@ -3,7 +3,7 @@
     <AuthenticatedLayout title="Orders">
         <template #headerAction>
             <div>
-                <Link href="/customers/create" as="v-btn">
+                <Link href="/pos" as="v-btn">
                     <v-btn block rounded="lg">Create Order</v-btn>
                 </Link>
             </div>

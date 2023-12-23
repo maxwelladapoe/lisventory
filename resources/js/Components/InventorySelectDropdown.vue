@@ -1,7 +1,7 @@
 <template>
     <v-autocomplete
-        label="Select Customer"
-        placeholder="Search a customer"
+        label="Search Inventory"
+        placeholder="Search for an inventory item"
         density="compact"
         :items="results"
         item-title="name"
@@ -9,18 +9,18 @@
         return-object
         @update:search="debouncedFn"
         v-model="selectedItem"
-        @update:menu="emits('changed')"
+        no-filter
     />
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useDebounceFn, useVModel } from "@vueuse/core";
 
 const props = defineProps({
     modelValue: Object,
 });
 
-const emits = defineEmits(["update:modelValue"]);
+const emits = defineEmits(["update:modelValue", "changed"]);
 
 const results = ref([]);
 const searchValue = ref("");
@@ -39,17 +39,18 @@ const debouncedFn = useDebounceFn((searchTerm) => {
 }, 500);
 
 function search(searchTerm = "") {
-    let searchPath = route("customers.search");
+    let searchPath = route("inventory.search");
     if (searchTerm) {
         searchPath = `${searchPath}/?search=${searchTerm}`;
     }
     axios.get(searchPath).then(({ data }) => {
-        results.value = data.customers.data.map((cus) => {
-            return {
-                name: `${cus.first_name} ${cus.last_name}`,
-                ...cus,
-            };
-        });
+        results.value = data.inventory.data;
     });
 }
+
+// watch(selectedItem, (newValue) => {
+//     if (newValue) {
+//         emits("changed");
+//     }
+// });
 </script>

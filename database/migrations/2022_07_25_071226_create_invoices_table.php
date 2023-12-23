@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('invoice_no')->nullable();
             $table->dateTime('date')->nullable();
             $table->date('due_date')->nullable();
-            $table->text('description')->nullable();
+            $table->text('note')->nullable();
             $table->string('currency')->nullable();
             $table->boolean('status')->default(False)->comment('0=pending, 1= Approved');
             $table->foreignId("user_id")->comment("user id of creator");

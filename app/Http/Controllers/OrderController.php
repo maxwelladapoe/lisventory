@@ -27,7 +27,6 @@ class OrderController extends Controller
         return Inertia::render('Orders/Index', [
             'orders' => $orders,
         ]);
-
     }
 
     /**
@@ -37,7 +36,13 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        $user = Auth::user();
+
+        $inventory = InventoryItem::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->latest()->get();
+
+        return Inertia::render('Orders/POS/NewOrder', [
+            'inventory' => $inventory
+        ]);
     }
 
     /**
@@ -55,7 +60,7 @@ class OrderController extends Controller
             "order_items.*.quantity" => ['required', 'string'],
             "order_items.*.inventory_item_id" => ['required', 'string'],
         ]);
-$user = Auth::user();
+        $user = Auth::user();
 
         // add to the database
         $order = new Order();

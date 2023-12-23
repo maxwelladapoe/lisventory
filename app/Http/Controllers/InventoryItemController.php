@@ -32,6 +32,22 @@ class InventoryItemController extends Controller
         ]);
     }
 
+
+    public function search(Request $request)
+    {
+        $user = Auth::user();
+        $search = $request->search;
+
+        $inventoryItems = InventoryItem::search($search)->where('team_id', $user->current_team_id)->latest()->paginate(10);
+
+
+        return response()->json([
+            'success' => true,
+            'inventory' => $inventoryItems
+        ], 201);
+    }
+
+
     public function create()
     {
         $user = Auth::user();

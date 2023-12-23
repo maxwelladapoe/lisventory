@@ -68,8 +68,8 @@
                             </div>
                         </div>
                     </v-card-text>
-                    <hr
-                        class="v-divider v-theme--light mb-2"
+                    <v-divider
+                        class="mb-2"
                         aria-orientation="horizontal"
                         role="separator"
                     />
@@ -110,8 +110,7 @@
                             </table>
                         </div>
                     </div>
-                    <hr
-                        class="v-divider v-theme--light"
+                    <v-divider
                         aria-orientation="horizontal"
                         role="separator"
                     />
@@ -144,78 +143,142 @@
                                 </div>
                             </div>
 
-                            <v-card class="d-flex">
-                                <div class="pa-5 flex-grow-1">
-                                    <v-row>
-                                        <v-col cols="12" md="6">
-                                            <v-autocomplete
-                                                dirty
-                                                label="Select Item"
-                                                density="compact"
-                                                class="mb-3"
-                                            />
+                            <template
+                                v-for="(
+                                    invoiceItem, index
+                                ) in invoiceForm.invoiceItems"
+                                :key="`${index}-invoice-item-index`"
+                            >
+                                <v-card class="d-flex mb-4">
+                                    <div class="pa-5 flex-grow-1">
+                                        <v-row>
+                                            <v-col cols="12" md="6">
+                                                <InventorySelectDropdown
+                                                    v-model="
+                                                        invoiceItem.inventory_item
+                                                    "
+                                                    @changed="
+                                                        setInventoryItemId(
+                                                            index
+                                                        )
+                                                    "
+                                                />
+                                            </v-col>
 
-                                            <v-textarea
-                                                density="compact"
-                                                dirty
-                                                rows="3"
-                                                label="Description"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" sm="4" md="2">
-                                            <v-text-field
-                                                dirty
-                                                label="Cost"
-                                                density="compact"
-                                            />
+                                            <v-col cols="12" md="6">
+                                                <v-textarea
+                                                    density="compact"
+                                                    dirty
+                                                    rows="2"
+                                                    label="Description"
+                                                    v-model="
+                                                        invoiceItem.description
+                                                    "
+                                                />
+                                            </v-col>
 
-                                            <div class="text-body-2 mt-5">
-                                                <p class="mb-1">Discount</p>
-                                                <span>0%</span
-                                                ><span
-                                                    class="mx-2"
-                                                    aria-describedby="v-tooltip-342"
+                                            <v-col cols="12" sm="4" md="2">
+                                                <v-text-field
+                                                    dirty
+                                                    label="Price"
+                                                    density="compact"
+                                                    v-model="invoiceItem.price"
+                                                    type="float"
+                                                    readonly
                                                 >
-                                                    0%
-                                                    <!----></span
-                                                ><span
-                                                    aria-describedby="v-tooltip-343"
-                                                >
-                                                    0%
-                                                    <!----></span
-                                                >
-                                            </div>
-                                        </v-col>
-                                        <v-col cols="12" sm="4" md="2">
-                                            <v-text-field
-                                                dirty
-                                                label="Hours"
-                                                density="compact"
-                                            />
-                                        </v-col>
-                                        <v-col cols="12" sm="4" md="2">
-                                            <p class="my-2">
-                                                <span class="d-inline d-md-none"
-                                                    >Price: </span
-                                                ><span class="text-body-1"
-                                                    >$0</span
-                                                >
-                                            </p>
-                                        </v-col>
-                                    </v-row>
-                                </div>
-                                <div
-                                    class="d-flex flex-column item-actions pa-1 border-s"
-                                >
-                                    <v-btn
-                                        color="plain"
-                                        icon="mdi-close"
-                                        roundex="xl"
-                                    />
-                                </div>
-                            </v-card>
+                                                    <template
+                                                        #prepend-inner
+                                                        v-if="
+                                                            invoiceItem.inventory_item
+                                                        "
+                                                    >
+                                                        <span
+                                                            class="text-body-2 font-weight-bold"
+                                                        >
+                                                            {{
+                                                                invoiceItem
+                                                                    .inventory_item
+                                                                    .currency
+                                                            }}
+                                                        </span>
+                                                    </template>
+                                                </v-text-field>
+
+                                                <div class="text-body-2 mt-5">
+                                                    <p class="mb-1">Discount</p>
+                                                    <span>0%</span
+                                                    ><span
+                                                        class="mx-2"
+                                                        aria-describedby="v-tooltip-342"
+                                                    >
+                                                        0%
+                                                        <!----></span
+                                                    ><span
+                                                        aria-describedby="v-tooltip-343"
+                                                    >
+                                                        0%
+                                                        <!----></span
+                                                    >
+                                                </div>
+                                            </v-col>
+                                            <v-col cols="12" sm="4" md="2">
+                                                <v-text-field
+                                                    dirty
+                                                    label="Quantity"
+                                                    density="compact"
+                                                    type="number"
+                                                    v-model="
+                                                        invoiceItem.quantity
+                                                    "
+                                                    min="1"
+                                                />
+                                            </v-col>
+                                            <v-col cols="12" sm="4" md="2">
+                                                <p class="my-2">
+                                                    <span
+                                                        class="d-inline d-md-none"
+                                                        >Total Price: </span
+                                                    ><span class="text-body-1">
+                                                        <span
+                                                            class="text-body-2 font-weight-bold"
+                                                            v-if="
+                                                                invoiceItem.inventory_item
+                                                            "
+                                                        >
+                                                            {{
+                                                                invoiceItem
+                                                                    .inventory_item
+                                                                    .currency
+                                                            }}
+                                                        </span>
+
+                                                        {{
+                                                            invoiceItem.total
+                                                        }}</span
+                                                    >
+                                                </p>
+                                            </v-col>
+                                        </v-row>
+                                    </div>
+                                    <div
+                                        v-if="
+                                            invoiceForm.invoiceItems.length > 1
+                                        "
+                                        class="d-flex flex-column item-actions pa-1 border-s"
+                                    >
+                                        <v-btn
+                                            color="plain"
+                                            icon="mdi-close"
+                                            roundex="xl"
+                                            @click="removeItem(index)"
+                                        />
+                                    </div>
+                                </v-card>
+                            </template>
                         </div>
-                        <v-btn prepend-icon="mdi-plus"> Add Item </v-btn>
+                        <v-btn prepend-icon="mdi-plus" @click="addItemToForm">
+                            Add Item
+                        </v-btn>
                     </v-card-text>
                     <v-divider
                         class="my-2"
@@ -243,40 +306,40 @@
                                 <tr>
                                     <td class="pe-16">Subtotal:</td>
                                     <td class="text-end">
-                                        <h6 class="text-sm font-weight-medium">
-                                            $1800
-                                        </h6>
+                                        <p class="text-sm font-weight-medium">
+                                            {{ invoiceSubTotal }}
+                                        </p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="pe-16">Discount:</td>
                                     <td class="text-end">
-                                        <h6 class="text-sm font-weight-medium">
+                                        <p class="text-sm font-weight-medium">
                                             $28
-                                        </h6>
+                                        </p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="pe-16">Tax:</td>
                                     <td class="text-end">
-                                        <h6 class="text-sm font-weight-medium">
+                                        <p class="text-sm font-weight-medium">
                                             21%
-                                        </h6>
+                                        </p>
                                     </td>
                                 </tr>
                             </table>
-                            <hr
-                                class="v-divider v-theme--light mt-4 mb-3"
+                            <v-divider
+                                class="mt-4 mb-3"
                                 aria-orientation="horizontal"
                                 role="separator"
                             />
                             <table class="w-100">
                                 <tr>
-                                    <td>Total:</td>
+                                    <td>Grand Total:</td>
                                     <td class="text-end">
-                                        <h6 class="text-sm font-weight-medium">
-                                            $1690
-                                        </h6>
+                                        <p class="font-bold">
+                                            ${{ invoiceSubTotal }}
+                                        </p>
                                     </td>
                                 </tr>
                             </table>
@@ -289,20 +352,20 @@
                     />
                     <v-card-text class="v-card-text">
                         <v-label text="Note:" />
-                        <v-textarea />
+                        <v-textarea v-model="invoiceForm.note" />
                     </v-card-text>
                 </v-card>
             </v-col>
             <v-col cols="12" md="3">
                 <v-card>
                     <v-card-text>
-                        <v-btn prepend-icon="mdi-send" class="mb-3" block
-                            >Send Invoice</v-btn
+                        <v-btn prepend-icon="mdi-content-save" class="mb-3" block
+                        color="success" >Save</v-btn
                         >
-                        <Link :as="vBtn" href="/hellooo" class="d-block">
+                        <v-btn class="mb-3 " block variant="outlined">
                             Preview
-                        </Link>
-                        <v-btn variant="outlined" block> Save </v-btn>
+                        </v-btn>
+                        <v-btn   block prepend-icon="mdi-send">Save & Send Invoice </v-btn>
                     </v-card-text>
                 </v-card>
 
@@ -339,7 +402,63 @@
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Link, useForm } from "@inertiajs/vue3";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import CustomerSelectDropdown from "@/Components/CustomerSelectDropdown.vue";
+import { watch, computed } from "vue";
+import InventorySelectDropdown from "@/Components/InventorySelectDropdown.vue";
+
+const defaultInvoiceItem = {
+    inventory_item: null,
+    inventory_item_id: "",
+    quantity: 1,
+    price: 0,
+    description: "",
+    additional_markup: "",
+    discount_percentage: "",
+    total: 0,
+    currency: "",
+};
+
+const invoiceForm = useForm({
+    invoiceItems: [{ ...defaultInvoiceItem }],
+    note: "",
+    customer_id: "",
+    tax: "",
+    currency: "",
+    due_date: "",
+    status: "",
+});
+
+function addItemToForm() {
+    invoiceForm.invoiceItems.push({ ...defaultInvoiceItem });
+}
+
+function removeItem(index) {
+    if (invoiceForm.invoiceItems.length > 1) {
+        invoiceForm.invoiceItems.splice(index, 1);
+    }
+}
+
+const invoiceSubTotal = computed(() => {
+    return invoiceForm.invoiceItems
+        .map((item) => item.total)
+        .reduce((accumulator, currentValue) => {
+            return accumulator + currentValue;
+        }, 0);
+});
+
+watch(
+    () => invoiceForm.invoiceItems,
+    () => {
+        invoiceForm.invoiceItems.forEach((item) => {
+            if (item.inventory_item) {
+                item.inventory_item_id = item.inventory_item.id;
+                item.price = item.inventory_item.resell_price;
+            }
+            item.total = item.price * item.quantity;
+        });
+    },
+    { deep: true }
+);
 </script>

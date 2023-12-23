@@ -46,16 +46,14 @@ class CustomerController extends Controller
     public function search(Request $request)
     {
         $user = Auth::user();
+        $search = $request->search;
 
-        $customers = Customer::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->when($request->query('search'), function ($query, $search) {
-            $query->where(DB::raw('lower(first_name)'), 'like', '%' . strtolower($search) . '%')
-            ->orWhere(DB::raw('lower(last_name)'), 'like', '%' . strtolower($search) . '%');
-        });
+        $customers = Customer::search($search)->where('team_id', $user->current_team_id)->latest()->paginate(10);
 
 
         return response()->json([
             'success' => true,
-            'customers' => $customers->latest()->paginate(10)
+            'customers' => $customers
         ], 201);
     }
 

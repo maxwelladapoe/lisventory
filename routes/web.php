@@ -48,7 +48,7 @@ Route::middleware([
         Route::put('/update/{inventory}', 'update')->name('inventory.update');
         Route::delete('/delete', 'destroy')->name('inventory.destroy');
 
-       // Route::get('/search', 'search')->name('inventory.search');
+       Route::get('/search', 'search')->name('inventory.search');
     });
 
     Route::controller(CustomerController::class)->prefix('customers')->group(function () {
@@ -69,11 +69,17 @@ Route::middleware([
     });
     Route::controller(OrderController::class)->prefix('orders')->group(function () {
         Route::get('/', 'index')->name('orders.index');
-        Route::get('/create', 'create')->name('orders.create');
         Route::post('/store', 'store')->name('orders.store');
         Route::get('/edit/{order}', 'edit')->name('orders.edit');
         Route::put('/update/{order}', 'update')->name('orders.update');
     });
+
+
+    Route::controller(OrderController::class)->prefix('pos')->group(function () {
+        Route::get('/', 'create')->name('pos.create');
+
+    });
+
     Route::controller(InvoiceController::class)->prefix('invoices')->group(function () {
         Route::get('/', 'index')->name('invoices.index');
         Route::get('/create', 'create')->name('invoices.create');
