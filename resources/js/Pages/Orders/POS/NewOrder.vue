@@ -11,7 +11,7 @@
                                 v-for="inventoryItem in inventoryItems"
                                 :key="`inventory-item-${inventoryItem.id}`"
                             >
-                                <v-col cols="12" md="2" xl="3">
+                                <v-col cols="12" sm="6" md="4" xl="3">
                                     <div class="border rounded-lg">
                                         <v-img
                                             height="100"
@@ -42,23 +42,39 @@
                             </template>
                         </v-row>
                     </v-col>
-                    <v-divider vertical></v-divider>
-                    <v-col cols="12" lg="4">
-                        <template
-                            v-for="(selectedItem, i) in posForm.selectedItems"
-                            :key="`${i}-selected-item`"
-                        >
-                            <v-card density="compact" flat>
-                                <v-card-item>
-                                    <div
-                                        class="d-flex flex-no-wrap justify-space-between"
-                                    >
-                                        <div>
-                                            <v-card-title class="text-h6">
-                                                {{ selectedItem.item.name }}
-                                            </v-card-title>
+                    <v-divider vertical />
 
-                                            <v-card-subtitle>
+                    <v-col cols="12" lg="4">
+                        <div>
+                            <p class="pb-2">Order Items</p>
+                            <v-divider />
+                        </div>
+                        <template v-if="posForm.selectedItems.length">
+                            <template
+                                v-for="(
+                                    selectedItem, i
+                                ) in posForm.selectedItems"
+                                :key="`${i}-selected-item`"
+                            >
+                                <div
+                                    class="pa-4 d-flex justify-space-between align-start"
+                                >
+                                    <div class="d-flex flex-no-wrap">
+                                        <v-avatar
+                                            size="50"
+                                            rounded="0"
+                                            class="mr-2"
+                                        >
+                                            <v-img
+                                                src="https://cdn.vuetifyjs.com/images/cards/halcyon.png"
+                                            />
+                                        </v-avatar>
+                                        <div>
+                                            <div class="text-h6">
+                                                {{ selectedItem.item.name }}
+                                            </div>
+
+                                            <span class="text-body-1">
                                                 Price :
                                                 {{ selectedItem.item.currency }}
                                                 {{
@@ -66,37 +82,71 @@
                                                         .resell_price
                                                 }}
                                                 x
-                                                {{
-                                                    selectedItem.purchase_quantity
-                                                }}
-                                            </v-card-subtitle>
-
-                                            <div class="mt-3 w-50">
-                                                <v-text-field
-                                                    label="Quantity"
-                                                    v-model="
+                                                <span
+                                                    class="font-weight-bold"
+                                                    >{{
                                                         selectedItem.purchase_quantity
+                                                    }}</span
+                                                >
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="text-body-1">
+                                            <div
+                                                class="d-flex mr-2 flex-no-wrap"
+                                            >
+                                                <v-btn
+                                                    size="x-small"
+                                                    icon="mdi-minus"
+                                                    class="mr-1"
+                                                    @click="
+                                                        selectedItem.purchase_quantity -= 1
                                                     "
-                                                    type="number"
-                                                    density="compact"
+                                                />
+                                                <v-btn
+                                                    icon="mdi-plus"
+                                                    size="x-small"
+                                                    @click="
+                                                        selectedItem.purchase_quantity += 1
+                                                    "
                                                 />
                                             </div>
                                         </div>
-
-                                        <v-avatar size="110" rounded="0">
-                                            <v-img
-                                                src="https://cdn.vuetifyjs.com/images/cards/halcyon.png"
-                                            />
-                                        </v-avatar>
                                     </div>
-                                </v-card-item>
-                            </v-card>
-                            <v-divider />
+                                </div>
+                                <v-divider />
+                            </template>
+
+                            <v-row class="d-flex mt-3 px-4">
+                                <v-col cols="12" lg="5">
+                                    <v-textarea
+                                        rows="3"
+                                        resize="false"
+                                        class="w-100"
+                                    />
+                                </v-col>
+                                <v-divider vertical />
+                                <v-col cols="12" lg="7"
+                                    ><div class="text-right">
+                                        <div>
+                                            Sub Total: {{ orderSubTotal }}
+                                        </div>
+                                        <div>Tax: 0</div>
+                                        <div>Discount: 0</div>
+                                        <div class="font-weight-black">
+                                            Grand Total: 0
+                                        </div>
+                                    </div></v-col
+                                >
+                            </v-row>
                         </template>
 
-                        <div>
-                            
-                        </div>
+                        <template v-else>
+                            <v-icon icon="mdi-folder" />
+                            <div class="pa-2">No items selected yet</div>
+                        </template>
                     </v-col>
                 </v-row>
             </v-card-item>
@@ -114,6 +164,14 @@ const page = usePage();
 const inventoryItems = computed(() => page.props.inventory);
 const posForm = useForm({
     selectedItems: [],
+});
+
+const orderSubTotal = computed(() => {
+    return posForm.selectedItems
+        .map((item) => item.item.resell_price * item.purchase_quantity)
+        .reduce((accumulator, currentValue) => {
+            return accumulator + currentValue;
+        }, 0);
 });
 
 function addItem(inventoryItem) {
