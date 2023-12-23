@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
@@ -40,6 +41,22 @@ class CustomerController extends Controller
         return Inertia::render('Customers/Index', [
             'customers' => $customers
         ]);
+    }
+
+    public function search(Request $request)
+    {
+        $user = Auth::user();
+
+        $customers = Customer::where('user_id', $user->id)->orWhere('team_id', $user->current_team_id)->when($request->query('search'), function ($query, $search) {
+            $query->where(DB::raw('lower(first_name)'), 'like', '%' . strtolower($search) . '%')
+            ->orWhere(DB::raw('lower(last_name)'), 'like', '%' . strtolower($search) . '%');
+        });
+
+
+        return response()->json([
+            'success' => true,
+            'customers' => $customers->latest()->paginate(10)
+        ], 201);
     }
 
     public function create()

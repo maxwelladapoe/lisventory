@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\InventoryItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DeleteInventoryItemRequest extends FormRequest
@@ -11,8 +12,8 @@ class DeleteInventoryItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->id == $this->route()->parameter('inventory')->user_id;
-
+        $inventory = InventoryItem::find(request()->id);
+        return $this->user()->id == $inventory->user_id;
     }
 
     /**

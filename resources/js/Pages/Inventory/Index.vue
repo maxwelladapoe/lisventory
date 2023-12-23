@@ -58,7 +58,9 @@
                                             icon="mdi-dots-horizontal"
                                             v-bind="props"
                                             size="small"
-                                        ></v-btn>
+                                            :loading="form.processing"
+                                            :disabled="form.processing"
+                                        />
                                     </template>
 
                                     <v-list>
@@ -87,22 +89,33 @@
             </v-card>
         </div>
     </AuthenticatedLayout>
+
+    <DeleteModal
+        v-model="openDeleteModal"
+        title="Delete Inventory"
+        @approveDelete="deleteInventory"
+    >
+        <div>
+            {{ currentSelectedItem.name }}
+        </div>
+    </DeleteModal>
 </template>
 
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head, Link, router } from "@inertiajs/vue3";
-import { usePage } from "@inertiajs/vue3";
+import { Head, Link, router, usePage, useForm } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import { TableHeaders, TableActionItems } from "@/Configs/inventoryConfig";
 import { useTimeAgo, useDebounceFn } from "@vueuse/core";
+import DeleteModal from "@/Components/Modals/DeleteModal.vue";
 
 const page = usePage();
 const inventory = computed(() => {
     return page.props.inventory.data;
 });
 const searchQuery = ref();
-
+const openDeleteModal = ref(false);
+const currentSelectedItem = ref(null);
 const paginationItems = computed(() => {
     const inv = page.props.inventory;
     return {
@@ -116,8 +129,15 @@ function getTimeAgo(date) {
 }
 
 function menuActionClick(actionItem, rowItem) {
-    if (actionItem.id === "edit") {
-        router.visit(`/inventory/edit/${rowItem.id}`);
+    currentSelectedItem.value = rowItem;
+    switch (actionItem.id) {
+        case "edit":
+            router.visit(`/inventory/edit/${rowItem.id}`);
+            break;
+
+        case "delete":
+            openDeleteModal.value = true;
+            break;
     }
 }
 
@@ -125,4 +145,13 @@ const debouncedFn = useDebounceFn(() => {
     // search
     router.visit(`/inventory?search=${searchQuery.value}`);
 }, 1000);
+
+const form = useForm({
+    id: "",
+});
+
+function deleteInventory() {
+    form.id = currentSelectedItem.value.id;
+    form.delete(route("inventory.destroy"));
+}
 </script>

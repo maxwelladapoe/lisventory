@@ -77,12 +77,7 @@
                         class="v-card-text d-flex flex-wrap justify-space-between flex-column flex-sm-row gap-y-5"
                     >
                         <div class="mb-4 mb-sm-0" style="inline-size: 15.5rem">
-                            <v-autocomplete
-                                dirty
-                                label="Invoice To:"
-                                hint="Select a customer"
-                                density="compact"
-                            />
+                            <CustomerSelectDropdown dirty label="Invoice To:" />
                         </div>
 
                         <div>
@@ -314,11 +309,15 @@
                 <v-select label="Accept Payment Via" dirty class="my-6" />
 
                 <div class="d-flex align-center justify-space-between pa-0">
-                        <div><v-label for="payment-terms" text="Payment Terms" /></div>
+                    <div>
+                        <v-label for="payment-terms" text="Payment Terms" />
+                    </div>
                     <div><v-switch dirty /></div>
                 </div>
                 <div class="d-flex align-center justify-space-between pa-0">
-                       <div><v-label text="Client Notes" for="client-notes" /></div> 
+                    <div>
+                        <v-label text="Client Notes" for="client-notes" />
+                    </div>
                     <div><v-switch dirty /></div>
                 </div>
                 <div class="d-flex align-center justify-space-between pa-0">
@@ -342,4 +341,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import CustomerSelectDropdown from "@/Components/CustomerSelectDropdown.vue";
 </script>

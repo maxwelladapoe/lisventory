@@ -46,6 +46,9 @@ Route::middleware([
         Route::post('/store', 'store')->name('inventory.store');
         Route::get('/edit/{inventory}', 'edit')->name('inventory.edit');
         Route::put('/update/{inventory}', 'update')->name('inventory.update');
+        Route::delete('/delete', 'destroy')->name('inventory.destroy');
+
+       // Route::get('/search', 'search')->name('inventory.search');
     });
 
     Route::controller(CustomerController::class)->prefix('customers')->group(function () {
@@ -54,6 +57,7 @@ Route::middleware([
         Route::post('/store', 'store')->name('customers.store');
         Route::get('/edit/{customer}', 'edit')->name('customers.edit');
         Route::put('/update/{customer}', 'update')->name('customers.update');
+        Route::get('/search', 'search')->name('customers.search');
     });
 
     Route::controller(SupplierController::class)->prefix('suppliers')->group(function () {
@@ -81,5 +85,4 @@ Route::middleware([
         Route::get('/', 'index')->name('reports.index');
         Route::get('/report/{type}', 'show')->name('reports.edit');
     });
-
 });
