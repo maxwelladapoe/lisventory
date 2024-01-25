@@ -50,39 +50,7 @@
                         </template>
 
                         <template v-slot:item.action="{ item }">
-                            <div>
-                                <v-menu>
-                                    <template v-slot:activator="{ props }">
-                                        <v-btn
-                                            variant="plain"
-                                            icon="mdi-dots-horizontal"
-                                            v-bind="props"
-                                            size="small"
-                                            :loading="form.processing"
-                                            :disabled="form.processing"
-                                        />
-                                    </template>
-
-                                    <v-list>
-                                        <v-list-item
-                                            v-for="(
-                                                actionItem, i
-                                            ) in TableActionItems"
-                                            :key="i"
-                                            @click="
-                                                menuActionClick(
-                                                    actionItem,
-                                                    item
-                                                )
-                                            "
-                                        >
-                                            <v-list-item-title>
-                                                {{ actionItem.title }}
-                                            </v-list-item-title>
-                                        </v-list-item>
-                                    </v-list>
-                                </v-menu>
-                            </div>
+                            <TableItemMenu :action-items="TableActionItems" :is-loading="form.processing" @menu-item-clicked="menuActionClick($event, item)"/>
                         </template>
                     </v-data-table-server>
                 </v-card-text>
@@ -108,6 +76,7 @@ import { computed, ref } from "vue";
 import { TableHeaders, TableActionItems } from "@/Configs/inventoryConfig";
 import { useTimeAgo, useDebounceFn } from "@vueuse/core";
 import DeleteModal from "@/Components/Modals/DeleteModal.vue";
+import TableItemMenu from "@/Components/TableItemMenu.vue";
 
 const page = usePage();
 const inventory = computed(() => {

@@ -17,7 +17,7 @@
                     rounded="lg"
                     link
                     :class="{
-                        'v-list-item--active': $page.url.startsWith(item.to),
+                        'v-list-item--active': ($page.url.startsWith(item.to)||$page.url.startsWith(item.altLink)),
                     }"
                 />
             </Link>

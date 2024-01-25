@@ -14,6 +14,7 @@ export default {
             title: "Orders",
             icon: "mdi-cart-variant",
             to: "/orders",
+            altLink:"/pos"
         },
         {
             title: "Customers",

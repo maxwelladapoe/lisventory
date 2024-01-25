@@ -86,12 +86,20 @@
 
             <v-col cols="12">
                 <v-label>Item images (only images are allowed)</v-label>
-                <v-file-input
+                <!-- <v-file-input
                     name="attachments"
                     multiple
                     maxNumFiles="5"
                     class="mb-6"
                     variant="outlined"
+                    v-model="form.attachments"
+                    :error-messages="form.errors.attachments"
+                /> -->
+                <ImageDropZone
+                    name="attachments"
+                    multiple
+                    maxNumFiles="5"
+                    class="mb-6"
                     v-model="form.attachments"
                     :error-messages="form.errors.attachments"
                 />
@@ -115,7 +123,7 @@
 import { ref, computed, onMounted } from "vue";
 import CountryCurrency from "@/Data/Currencies.json";
 import { useForm } from "@inertiajs/vue3";
-
+import ImageDropZone from "../ImageDropZone.vue";
 const emits = defineEmits(["submissionSuccess"]);
 
 const props = defineProps({
